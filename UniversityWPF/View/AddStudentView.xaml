@@ -1,0 +1,33 @@
+﻿<Window x:Class="UniversityWPF.View.AddStudentView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UniversityWPF.View"
+        mc:Ignorable="d"
+        Title="Add Student" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterOwner">
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Column="0" Grid.Row="0">
+            <TextBlock Text="Enter the first name: "/>
+            <TextBlock Text="Enter the last name: "/>
+            <TextBlock Text="Select a group: "/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Grid.Row="0">
+            <TextBox/>
+            <TextBox/>
+            <ComboBox/>
+        </StackPanel>
+        <WrapPanel Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right">
+            <Button Content="Add"/>
+            <Button Content="Cancel"/>
+        </WrapPanel>
+    </Grid>
+</Window>
