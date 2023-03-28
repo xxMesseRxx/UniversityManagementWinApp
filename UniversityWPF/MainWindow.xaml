@@ -82,36 +82,24 @@
             <!--Start: Course tab-->
             <TabItem Header="Courses" Style="{StaticResource HorizontalTabItem}">
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="0.5*"/>
-                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <DataGrid Grid.Column="0" Grid.RowSpan="2" ItemsSource="{Binding Courses}">
+                    <DataGrid Grid.Row="0" ItemsSource="{Binding Courses}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Id" Binding="{Binding CourseId}"/>
                             <DataGridTextColumn Header="Course name" Binding="{Binding Name}"/>
                             <DataGridTextColumn Header="Description" Width="*" Binding="{Binding Description}"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <StackPanel Grid.Column="1">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Course editing"/>
-                            <CheckBox/>
-                        </StackPanel>
-                        <TextBlock Text="Course name:"/>
-                        <TextBox/>
-                        <TextBlock Text="Course description:"/>
-                        <TextBox/>
-                    </StackPanel>
-                    <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" 
-                                HorizontalAlignment="Center">
-                        <Button Content="Add course"/>
-                        <Button Content="Remove course"/>
-                    </StackPanel>
+                    <DockPanel Grid.Row="1">
+                        <CheckBox DockPanel.Dock="Left" Content="Editing mod"/>
+                        <WrapPanel DockPanel.Dock="Right" HorizontalAlignment="Right">
+                            <Button Content="Add course"/>
+                            <Button Content="Remove course"/>
+                        </WrapPanel>
+                    </DockPanel>
                 </Grid>
             </TabItem>
             <!--End: Course tab-->
