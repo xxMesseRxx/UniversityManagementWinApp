@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace UniversityWPF.View
 {
 	/// <summary>
-	/// Логика взаимодействия для AddCourseView.xaml
+	/// Логика взаимодействия для AddCourseWindow.xaml
 	/// </summary>
-	public partial class AddCourseView : Window
+	public partial class AddCourseWindow : Window
     {
-        public AddCourseView()
+        public AddCourseWindow()
         {
             InitializeComponent();
         }

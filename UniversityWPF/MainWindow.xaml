@@ -90,11 +90,11 @@
                         <RowDefinition/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <DataGrid Grid.Column="0" Grid.RowSpan="2">
+                    <DataGrid Grid.Column="0" Grid.RowSpan="2" ItemsSource="{Binding Courses}">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Id"/>
-                            <DataGridTextColumn Header="Course name"/>
-                            <DataGridTextColumn Header="Description" Width="*"/>
+                            <DataGridTextColumn Header="Id" Binding="{Binding CourseId}"/>
+                            <DataGridTextColumn Header="Course name" Binding="{Binding Name}"/>
+                            <DataGridTextColumn Header="Description" Width="*" Binding="{Binding Description}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                     <StackPanel Grid.Column="1">

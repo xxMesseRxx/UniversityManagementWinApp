@@ -1,6 +1,15 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--Start: Horizontal TabItem style-->
     <Style x:Key="HorizontalTabItem" TargetType="TabItem">
         <Setter Property="Padding" Value="50 10"/>
     </Style>
+    <!--End: Horizontal TabItem style-->
+
+    <!--Start: Main DataGrid style-->
+    <Style TargetType="DataGrid">
+        <Setter Property="AutoGenerateColumns" Value="False"/>
+        <Setter Property="IsReadOnly" Value="True"/>
+    </Style>
+    <!--End: Main DataGrid style-->
 </ResourceDictionary>

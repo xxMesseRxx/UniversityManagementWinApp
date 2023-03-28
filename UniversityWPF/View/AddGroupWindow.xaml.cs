@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace UniversityWPF.View
 {
 	/// <summary>
-	/// Логика взаимодействия для AddGroupView.xaml
+	/// Логика взаимодействия для AddGroupWindow.xaml
 	/// </summary>
-	public partial class AddGroupView : Window
+	public partial class AddGroupWindow : Window
     {
-        public AddGroupView()
+        public AddGroupWindow()
         {
             InitializeComponent();
         }
