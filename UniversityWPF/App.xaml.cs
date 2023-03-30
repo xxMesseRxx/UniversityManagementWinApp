@@ -7,13 +7,17 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using UniversityWPF.Model;
+using UniversityWPF.Library.Interfaces;
+using UniversityWPF.ViewModel;
+using UniversityWPF.ViewModel.Services;
 
 namespace UniversityWPF
 {
-	/// <summary>
-	/// Interaction logic for App.xaml
-	/// </summary>
-	public partial class App : Application
+    /// <summary>
+    /// Interaction logic for App.xaml
+    /// </summary>
+    public partial class App : Application
 	{
 		private readonly IHost _host;
 
@@ -23,6 +27,9 @@ namespace UniversityWPF
 			.ConfigureServices(services =>
 			{
 				services.AddSingleton<MainWindow>();
+				services.AddDbContext<UniversityContext>();
+				services.AddSingleton<ICourseService, CourseService>();
+				services.AddSingleton<ApplicationViewModel>();
 			})
 			.Build();
 		}
