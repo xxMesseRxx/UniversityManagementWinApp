@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +14,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using UniversityWPF.Library.Interfaces;
+using UniversityWPF.ViewModel.Services;
 using UniversityWPF.ViewModel;
 
 namespace UniversityWPF
@@ -21,10 +25,10 @@ namespace UniversityWPF
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		public MainWindow()
+		public MainWindow(ApplicationViewModel model)
 		{
 			InitializeComponent();
-			DataContext = new ApplicationViewModel();
+			DataContext = model;
 		}
-	}
+    }
 }

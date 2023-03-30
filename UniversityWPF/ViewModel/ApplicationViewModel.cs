@@ -5,19 +5,30 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UniversityWPF.Library;
 using UniversityWPF.Model;
+using System.Windows;
+using System.Collections.Specialized;
+using UniversityWPF.Library.Interfaces;
 
 namespace UniversityWPF.ViewModel
 {
-    class ApplicationViewModel
+    public class ApplicationViewModel
     {
-        private UniversityContext _db = new UniversityContext();
         public ObservableCollection<Course> Courses { get; set; }
+        public RelayCommand SaveChangesCommand { get { return _saveChangesCommand; } }
 
-        public ApplicationViewModel() 
+		private RelayCommand _saveChangesCommand;
+		private ICourseService _courseService;
+
+        public ApplicationViewModel(ICourseService courseService) 
         {
-            _db.Courses.Load();
-            Courses = _db.Courses.Local.ToObservableCollection();
+            _courseService = courseService;
+
+            _saveChangesCommand = new RelayCommand(_courseService.SaveChanges);
+
+            Courses = _courseService.GetAll();
+            Courses.CollectionChanged += (sender, e) => { SaveChangesCommand.Execute(e); };
         }
     }
 }

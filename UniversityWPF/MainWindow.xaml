@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UniversityWPF"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
@@ -87,10 +88,17 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <DataGrid Grid.Row="0" ItemsSource="{Binding Courses}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="RowEditEnding">
+                                <i:InvokeCommandAction Command="{Binding SaveChangesCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Id" Binding="{Binding CourseId}"/>
-                            <DataGridTextColumn Header="Course name" Binding="{Binding Name}"/>
-                            <DataGridTextColumn Header="Description" Width="*" Binding="{Binding Description}"/>
+                            <DataGridTextColumn Header="Course name"
+                                                Binding="{Binding Name, UpdateSourceTrigger=LostFocus}"/>
+                            <DataGridTextColumn Header="Description" Width="*" 
+                                                Binding="{Binding Description, UpdateSourceTrigger=LostFocus}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                     <DockPanel Grid.Row="1">
