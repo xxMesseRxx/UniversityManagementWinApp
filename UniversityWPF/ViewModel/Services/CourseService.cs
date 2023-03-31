@@ -14,23 +14,50 @@ namespace UniversityWPF.ViewModel.Services
     public class CourseService : ICourseService
     {
         private UniversityContext _db;
+        private ObservableCollection<Course> _courses;
 
         public CourseService(UniversityContext context)
         {
             _db = context;
-        }
+            _db.Courses.Load();
+
+            _courses = _db.Courses.Local.ToObservableCollection();
+		}
 
         public ObservableCollection<Course> GetAll()
         {
-            _db.Courses.Load();
-            return _db.Courses.Local.ToObservableCollection();
-        }
+            return _courses;
+		}
         public void SaveChanges(object? obj = null)
         {
-            if (obj is null)
+            if (obj is Course course)
             {
-                _db.SaveChanges();
-                _db.Courses.ToList().Last().OnPropertyChanged("CourseId");
+                if (course.CourseId == 0)
+                {
+					try
+					{
+						_db.SaveChanges();
+						_db.Courses.ToList().Last().OnPropertyChanged("CourseId");
+					}
+					catch (DbUpdateException)
+					{
+						MessageBox.Show("Course with this name already exist");
+                        _courses.Remove(course);
+                    }
+				}
+                else
+                {
+                    try
+                    {
+						_db.SaveChanges();
+					}
+                    catch (DbUpdateException)
+                    {
+						MessageBox.Show("Course with this name already exist");
+                        _db.Entry(course).Reload();
+                        course.OnPropertyChanged("Name");
+                    }
+                }
             }
             else if (obj is NotifyCollectionChangedEventArgs arg && arg.Action == NotifyCollectionChangedAction.Remove)
             {
