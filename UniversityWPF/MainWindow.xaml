@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UniversityWPF"
+        xmlns:conv="clr-namespace:UniversityWPF.Library.Converters"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
@@ -12,6 +13,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles/MainStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            
+            <conv:BoolToOppositeBoolConverter x:Key="boolOppositeConverter"/>
         </ResourceDictionary>
     </Window.Resources>
     <DockPanel LastChildFill="True">
@@ -87,7 +90,9 @@
                         <RowDefinition/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <DataGrid Grid.Row="0" ItemsSource="{Binding Courses}">
+                    <DataGrid Grid.Row="0" ItemsSource="{Binding Courses}"
+                              IsReadOnly="{Binding ElementName=CoursesCanEdit, Path=IsChecked,
+                                                   Converter={StaticResource boolOppositeConverter}}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="RowEditEnding">
                                 <i:InvokeCommandAction Command="{Binding SaveChangesCommand}"/>
@@ -101,13 +106,10 @@
                                                 Binding="{Binding Description, UpdateSourceTrigger=LostFocus}"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <DockPanel Grid.Row="1">
-                        <CheckBox DockPanel.Dock="Left" Content="Editing mod"/>
-                        <WrapPanel DockPanel.Dock="Right" HorizontalAlignment="Right">
-                            <Button Content="Add course"/>
-                            <Button Content="Remove course"/>
-                        </WrapPanel>
-                    </DockPanel>
+                    <WrapPanel Grid.Row="1" HorizontalAlignment="Right">
+                        <CheckBox DockPanel.Dock="Left" Content="Editing mod"
+                                  x:Name="CoursesCanEdit"/>
+                    </WrapPanel>
                 </Grid>
             </TabItem>
             <!--End: Course tab-->

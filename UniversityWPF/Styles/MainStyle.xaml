@@ -9,7 +9,6 @@
     <!--Start: Main DataGrid style-->
     <Style TargetType="DataGrid">
         <Setter Property="AutoGenerateColumns" Value="False"/>
-        <Setter Property="IsReadOnly" Value="False"/>
     </Style>
     <!--End: Main DataGrid style-->
 </ResourceDictionary>
