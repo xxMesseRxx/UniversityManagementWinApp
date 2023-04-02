@@ -24,13 +24,13 @@
 
         <!--Start: Footer-->
         <StatusBar DockPanel.Dock="Bottom">
-            <TextBlock Text="{Binding StringFormat=Current page - {0}, ElementName=ee, Path=SelectedItem.Header}"/>
+            <TextBlock Text="{Binding StringFormat=Current page - {0}, ElementName=MainTabs, Path=SelectedItem.Header}"/>
             <TextBlock x:Name="statBarAddInfo"/>
         </StatusBar>
         <!--End: Footer-->
 
         <!--Start: Body-->
-        <TabControl x:Name="ee" TabStripPlacement="Left">
+        <TabControl x:Name="MainTabs" TabStripPlacement="Left">
             <!--Start: Home tab-->
             <TabItem Header="Home" Style="{StaticResource HorizontalTabItem}">
                 <Grid>
@@ -46,12 +46,12 @@
                     <!--Start: Left column-->
                     <StackPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center">
                         <TextBlock Text="Courses"/>
-                        <TextBlock Text="Number of course"/>
+                        <TextBlock Text="{Binding StringFormat=Number of courses: {0}, Path=CourseService.Courses.Count}"/>
                     </StackPanel>
-                    <DataGrid Grid.Column="0" Grid.Row="1">
+                    <DataGrid Grid.Column="0" Grid.Row="1" ItemsSource="{Binding CourseService.Courses}">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Id"/>
-                            <DataGridTextColumn Header="Course name" Width="*"/>
+                            <DataGridTextColumn Header="Id" Binding="{Binding CourseId}"/>
+                            <DataGridTextColumn Header="Course name" Width="*" Binding="{Binding Name}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                     <!--End: Left column-->
