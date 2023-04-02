@@ -10,7 +10,7 @@ namespace UniversityWPF.Library.Interfaces
 {
 	public interface ICourseService
 	{
-		public ObservableCollection<Course> GetAll();
-		public void SaveChanges(object obj);
+		ObservableCollection<Course> Courses { get; set; }
+		RelayCommand SaveChangesCommand { get; }
 	}
 }

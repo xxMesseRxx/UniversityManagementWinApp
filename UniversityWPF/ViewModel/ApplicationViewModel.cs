@@ -15,20 +15,11 @@ namespace UniversityWPF.ViewModel
 {
     public class ApplicationViewModel
     {
-        public ObservableCollection<Course> Courses { get; set; }
-        public RelayCommand SaveChangesCommand { get { return _saveChangesCommand; } }
-
-		private RelayCommand _saveChangesCommand;
-		private ICourseService _courseService;
+		public ICourseService CourseService { get; }
 
         public ApplicationViewModel(ICourseService courseService) 
         {
-            _courseService = courseService;
-
-            _saveChangesCommand = new RelayCommand(_courseService.SaveChanges);
-
-            Courses = _courseService.GetAll();
-            Courses.CollectionChanged += (sender, e) => { SaveChangesCommand.Execute(e); };
+            CourseService = courseService;
         }
     }
 }

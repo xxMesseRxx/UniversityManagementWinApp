@@ -8,27 +8,53 @@ using System.Collections.ObjectModel;
 using UniversityWPF.Library.Interfaces;
 using System.Collections.Specialized;
 using System.Windows;
+using UniversityWPF.Library;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace UniversityWPF.ViewModel.Services
 {
-    public class CourseService : ICourseService
+    public class CourseService : ICourseService, INotifyPropertyChanged
     {
-        private UniversityContext _db;
+		public event PropertyChangedEventHandler? PropertyChanged;
+
+		public ObservableCollection<Course> Courses
+        { 
+            get
+            {
+                return _courses;
+            }
+            set
+            {
+                _courses = value;
+                OnPropertyChanged();
+            }
+        }
+		public RelayCommand SaveChangesCommand { get { return _saveChangesCommand; } }
+
+		private RelayCommand _saveChangesCommand;
+		private UniversityContext _db;
         private ObservableCollection<Course> _courses;
+        private IServiceProvider _serviceProvider;
 
-        public CourseService(UniversityContext context)
+        public CourseService(IServiceProvider provider)
         {
-            _db = context;
-            _db.Courses.Load();
+			_serviceProvider = provider;
 
-            _courses = _db.Courses.Local.ToObservableCollection();
+			SetActualDbContext();
+
+			_saveChangesCommand = new RelayCommand(SaveChangesInDb);
 		}
 
-        public ObservableCollection<Course> GetAll()
-        {
-            return _courses;
+		public void OnPropertyChanged([CallerMemberName] string prop = "")
+		{
+			if (PropertyChanged != null)
+				PropertyChanged(this, new PropertyChangedEventArgs(prop));
 		}
-        public void SaveChanges(object? obj = null)
+
+		private void SaveChangesInDb(object? obj = null)
         {
             if (obj is Course course)
             {
@@ -37,12 +63,12 @@ namespace UniversityWPF.ViewModel.Services
 					try
 					{
 						_db.SaveChanges();
-						_db.Courses.ToList().Last().OnPropertyChanged("CourseId");
+						course.OnPropertyChanged("CourseId");
 					}
 					catch (DbUpdateException)
 					{
-						MessageBox.Show("Course with this name already exist");
-                        _courses.Remove(course);
+						MessageBox.Show($"Course with \"{course.Name}\" name already exist");
+                        Courses.Remove(course);
                     }
 				}
                 else
@@ -53,7 +79,7 @@ namespace UniversityWPF.ViewModel.Services
 					}
                     catch (DbUpdateException)
                     {
-						MessageBox.Show("Course with this name already exist");
+						MessageBox.Show($"Course with \"{course.Name}\" name already exist");
                         _db.Entry(course).Reload();
                         course.OnPropertyChanged("Name");
                     }
@@ -61,8 +87,22 @@ namespace UniversityWPF.ViewModel.Services
             }
             else if (obj is NotifyCollectionChangedEventArgs arg && arg.Action == NotifyCollectionChangedAction.Remove)
             {
-                _db.SaveChanges();
+                try
+                {
+					_db.SaveChanges();
+				}
+                catch (DbUpdateException)
+                {
+                    SetActualDbContext();
+                }
             }
         }
-    }
+        private void SetActualDbContext()
+        {
+			_db = _serviceProvider.GetRequiredService<UniversityContext>();
+            _db.Courses.Load();
+			Courses = _db.Courses.Local.ToObservableCollection();
+			Courses.CollectionChanged += (sender, e) => { SaveChangesInDb(e); };
+		}
+	}
 }

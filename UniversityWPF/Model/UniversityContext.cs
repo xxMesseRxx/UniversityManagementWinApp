@@ -10,15 +10,15 @@ public class UniversityContext : DbContext
 	public DbSet<Group> Groups { get; set; } = null!;
 	public DbSet<Student> Students { get; set; } = null!;
 
-	//public UniversityContext(DbContextOptions<UniversityContext> options)
-	//	: base(options)
-	//{
-	//}
-
-	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+	public UniversityContext(DbContextOptions<UniversityContext> options)
+		: base(options)
 	{
-		optionsBuilder.UseSqlServer("Server=localhost;Database=University;Trusted_Connection=True;Encrypt=False;");
 	}
+
+	//protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+	//{
+	//	optionsBuilder.UseSqlServer("Server=localhost;Database=University;Trusted_Connection=True;Encrypt=False;");
+	//}
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{

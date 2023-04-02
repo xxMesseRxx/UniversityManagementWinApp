@@ -90,12 +90,12 @@
                         <RowDefinition/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <DataGrid x:Name="CoursesTable" Grid.Row="0" ItemsSource="{Binding Courses}"
+                    <DataGrid x:Name="CoursesTable" Grid.Row="0" ItemsSource="{Binding CourseService.Courses}"
                               IsReadOnly="{Binding ElementName=CoursesCanEdit, Path=IsChecked,
                                                    Converter={StaticResource boolOppositeConverter}}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="RowEditEnding">
-                                <i:InvokeCommandAction Command="{Binding SaveChangesCommand}"
+                                <i:InvokeCommandAction Command="{Binding CourseService.SaveChangesCommand}"
                                                        CommandParameter="{Binding ElementName=CoursesTable,
                                                                                   Path=SelectedItem}"/>
                             </i:EventTrigger>

@@ -11,6 +11,7 @@ using UniversityWPF.Model;
 using UniversityWPF.Library.Interfaces;
 using UniversityWPF.ViewModel;
 using UniversityWPF.ViewModel.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace UniversityWPF
 {
@@ -27,7 +28,9 @@ namespace UniversityWPF
 			.ConfigureServices(services =>
 			{
 				services.AddSingleton<MainWindow>();
-				services.AddDbContext<UniversityContext>();
+				services.AddDbContext<UniversityContext>(options =>
+														 options.UseSqlServer("Server=localhost;Database=University;Trusted_Connection=True;Encrypt=False;"),
+														 ServiceLifetime.Transient);
 				services.AddSingleton<ICourseService, CourseService>();
 				services.AddSingleton<ApplicationViewModel>();
 			})
