@@ -93,7 +93,8 @@ namespace UniversityWPF.ViewModel.Services
 				}
                 catch (DbUpdateException)
                 {
-                    SetActualDbContext();
+					MessageBox.Show($"You can't remove course that has got groups");
+					SetActualDbContext();
                 }
             }
         }
