@@ -58,12 +58,12 @@
                     <!--Start: Central column-->
                     <StackPanel Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center">
                         <TextBlock Text="Groups"/>
-                        <TextBlock Text="Number of groups"/>
+                        <TextBlock Text="{Binding StringFormat=Number of groups: {0}, Path=GroupService.Groups.Count}"/>
                     </StackPanel>
-                    <DataGrid Grid.Column="1" Grid.Row="1">
+                    <DataGrid Grid.Column="1" Grid.Row="1" ItemsSource="{Binding GroupService.Groups}">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Id"/>
-                            <DataGridTextColumn Header="Group name" Width="*"/>
+                            <DataGridTextColumn Header="Id" Binding="{Binding GroupId}"/>
+                            <DataGridTextColumn Header="Group name" Width="*" Binding="{Binding Name}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                     <!--End: Central column-->
