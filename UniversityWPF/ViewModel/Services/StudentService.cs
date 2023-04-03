@@ -16,19 +16,19 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace UniversityWPF.ViewModel.Services
 {
-    public class GroupService : IGroupService, INotifyPropertyChanged
+    public class StudentService : IStudentService, INotifyPropertyChanged
     {
 		public event PropertyChangedEventHandler? PropertyChanged;
 
-		public ObservableCollection<Group> Groups
-        { 
+		public ObservableCollection<Student> Students
+		{ 
             get
             {
-                return _groups;
+                return _students;
             }
             set
             {
-				_groups = value;
+				_students = value;
                 OnPropertyChanged();
             }
         }
@@ -36,10 +36,10 @@ namespace UniversityWPF.ViewModel.Services
 
 		private RelayCommand _saveChangesCommand;
 		private UniversityContext _db;
-        private ObservableCollection<Group> _groups;
+        private ObservableCollection<Student> _students;
         private IServiceProvider _serviceProvider;
 
-        public GroupService(IServiceProvider provider)
+        public StudentService(IServiceProvider provider)
         {
 			_serviceProvider = provider;
 
@@ -56,64 +56,44 @@ namespace UniversityWPF.ViewModel.Services
 
 		private void SaveChangesInDb(object? obj = null)
         {
-            if (obj is Group group)
+            if (obj is Student student)
             {
-                if (string.IsNullOrEmpty(group.Name))
+                if (string.IsNullOrEmpty(student.FirstName))
                 {
-					MessageBox.Show("You didn't enter a name");
-					Groups.Remove(group);
+					MessageBox.Show("You didn't enter a first name");
+					Students.Remove(student);
 				}
-				else if (group.CourseId == 0)
+				else if (string.IsNullOrEmpty(student.LastName))
+				{
+					MessageBox.Show("You didn't enter a last name");
+					Students.Remove(student);
+				}
+				else if (student.GroupId == 0)
 				{
 					MessageBox.Show("You didn't choose a course");
-					Groups.Remove(group);
+					Students.Remove(student);
 				}
-				else if (group.GroupId == 0)
-                {
-					try
-					{
-						_db.SaveChanges();
-						group.OnPropertyChanged("GroupId");
-					}
-					catch (DbUpdateException)
-					{
-						MessageBox.Show($"Group with \"{group.Name}\" name already exist");
-                        Groups.Remove(group);
-                    }
+				else if (student.StudentId == 0)
+				{
+					_db.SaveChanges();
+					student.OnPropertyChanged("StudentId");
 				}
-                else
+				else
                 {
-                    try
-                    {
-						_db.SaveChanges();
-					}
-                    catch (DbUpdateException)
-                    {
-						MessageBox.Show($"Group with \"{group.Name}\" name already exist");
-                        _db.Entry(group).Reload();
-						group.OnPropertyChanged("Name");
-                    }
+					_db.SaveChanges();
                 }
             }
             else if (obj is NotifyCollectionChangedEventArgs arg && arg.Action == NotifyCollectionChangedAction.Remove)
             {
-                try
-                {
-					_db.SaveChanges();
-				}
-                catch (DbUpdateException)
-                {
-					MessageBox.Show($"You can't remove group that has got students");
-					SetActualDbContext();
-                }
+				_db.SaveChanges();
             }
         }
         private void SetActualDbContext()
         {
 			_db = _serviceProvider.GetRequiredService<UniversityContext>();
-            _db.Groups.Load();
-			Groups = _db.Groups.Local.ToObservableCollection();
-			Groups.CollectionChanged += (sender, e) => { SaveChangesInDb(e); };
+            _db.Students.Load();
+			Students = _db.Students.Local.ToObservableCollection();
+			Students.CollectionChanged += (sender, e) => { SaveChangesInDb(e); };
 		}
 	}
 }

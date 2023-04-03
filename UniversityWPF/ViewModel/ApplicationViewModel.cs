@@ -17,11 +17,15 @@ namespace UniversityWPF.ViewModel
     {
 		public ICourseService CourseService { get; }
 		public IGroupService GroupService { get; }
+		public IStudentService StudentService { get; }
 
-		public ApplicationViewModel(ICourseService courseService, IGroupService groupService) 
+		public ApplicationViewModel(ICourseService courseService,
+                                    IGroupService groupService,
+                                    IStudentService studentService) 
         {
             CourseService = courseService;
             GroupService = groupService;
+            StudentService = studentService;
         }
     }
 }

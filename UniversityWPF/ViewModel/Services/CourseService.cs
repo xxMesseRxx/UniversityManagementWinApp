@@ -56,7 +56,7 @@ namespace UniversityWPF.ViewModel.Services
             {
                 if (string.IsNullOrEmpty(course.Name))
                 {
-					MessageBox.Show($"Please enter a name");
+					MessageBox.Show($"You didn't enter a name");
 					Courses.Remove(course);
 				}
                 else if (course.CourseId == 0)

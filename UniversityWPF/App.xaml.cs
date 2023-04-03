@@ -33,6 +33,7 @@ namespace UniversityWPF
 														 ServiceLifetime.Transient);
 				services.AddSingleton<ICourseService, CourseService>();
 				services.AddSingleton<IGroupService, GroupService>();
+				services.AddSingleton<IStudentService, StudentService>();
 				services.AddSingleton<ApplicationViewModel>();
 			})
 			.Build();
