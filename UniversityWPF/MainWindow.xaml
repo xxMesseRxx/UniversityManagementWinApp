@@ -118,36 +118,47 @@
             <!--Start: Groups tab-->
             <TabItem Header="Groups" Style="{StaticResource HorizontalTabItem}">
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="0.5*"/>
-                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <DataGrid Grid.Column="0" Grid.RowSpan="2">
+                    <DataGrid x:Name="GroupsTable" Grid.Row="0" ItemsSource="{Binding GroupService.Groups}"
+                              IsReadOnly="{Binding ElementName=GroupsCanEdit, Path=IsChecked,
+                                                   Converter={StaticResource boolOppositeConverter}}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="RowEditEnding">
+                                <i:InvokeCommandAction Command="{Binding GroupService.SaveChangesCommand}"
+                                                       CommandParameter="{Binding ElementName=GroupsTable,
+                                                                                  Path=SelectedItem}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Id"/>
-                            <DataGridTextColumn Header="Group name"/>
-                            <DataGridComboBoxColumn Header="Course name" Width="*"/>
+                            <DataGridTextColumn Header="Id" Binding="{Binding GroupId}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Group name"
+                                                Binding="{Binding Name, UpdateSourceTrigger=LostFocus}"/>
+                            <DataGridComboBoxColumn Header="Course name" Width="*"
+                                                    SelectedValueBinding="{Binding CourseId, UpdateSourceTrigger=LostFocus}"
+                                                    DisplayMemberPath="Name"
+                                                    SelectedValuePath="CourseId">
+                                <DataGridComboBoxColumn.ElementStyle>
+                                    <Style TargetType="{x:Type ComboBox}">
+                                        <Setter Property="ItemsSource" Value="{Binding Path=DataContext.CourseService.Courses, 
+                                                                                       RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
+                                    </Style>
+                                </DataGridComboBoxColumn.ElementStyle>
+                                <DataGridComboBoxColumn.EditingElementStyle>
+                                    <Style TargetType="{x:Type ComboBox}">
+                                        <Setter Property="ItemsSource" Value="{Binding Path=DataContext.CourseService.Courses, 
+                                                                                       RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
+                                    </Style>
+                                </DataGridComboBoxColumn.EditingElementStyle>
+                            </DataGridComboBoxColumn>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <StackPanel Grid.Column="1">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Group editing"/>
-                            <CheckBox/>
-                        </StackPanel>
-                        <TextBlock Text="Group name:"/>
-                        <TextBox/>
-                        <TextBlock Text="Course name:"/>
-                        <ComboBox/>
-                    </StackPanel>
-                    <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" 
-                                HorizontalAlignment="Center">
-                        <Button Content="Add group"/>
-                        <Button Content="Remove group"/>
-                    </StackPanel>
+                    <WrapPanel Grid.Row="1" HorizontalAlignment="Right">
+                        <CheckBox DockPanel.Dock="Left" Content="Editing mod"
+                                  x:Name="GroupsCanEdit"/>
+                    </WrapPanel>
                 </Grid>
             </TabItem>
             <!--End: Groups tab-->

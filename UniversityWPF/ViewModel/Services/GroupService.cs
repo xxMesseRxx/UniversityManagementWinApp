@@ -1,6 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using UniversityWPF.Model;
+using System.Linq;
 using System.Collections.ObjectModel;
 using UniversityWPF.Library.Interfaces;
 using System.Collections.Specialized;
@@ -8,23 +11,24 @@ using System.Windows;
 using UniversityWPF.Library;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace UniversityWPF.ViewModel.Services
 {
-    public class CourseService : ICourseService, INotifyPropertyChanged
+    public class GroupService : IGroupService, INotifyPropertyChanged
     {
 		public event PropertyChangedEventHandler? PropertyChanged;
 
-		public ObservableCollection<Course> Courses
+		public ObservableCollection<Group> Groups
         { 
             get
             {
-                return _courses;
+                return _groups;
             }
             set
             {
-                _courses = value;
+				_groups = value;
                 OnPropertyChanged();
             }
         }
@@ -32,10 +36,10 @@ namespace UniversityWPF.ViewModel.Services
 
 		private RelayCommand _saveChangesCommand;
 		private UniversityContext _db;
-        private ObservableCollection<Course> _courses;
+        private ObservableCollection<Group> _groups;
         private IServiceProvider _serviceProvider;
 
-        public CourseService(IServiceProvider provider)
+        public GroupService(IServiceProvider provider)
         {
 			_serviceProvider = provider;
 
@@ -52,24 +56,29 @@ namespace UniversityWPF.ViewModel.Services
 
 		private void SaveChangesInDb(object? obj = null)
         {
-            if (obj is Course course)
+            if (obj is Group group)
             {
-                if (string.IsNullOrEmpty(course.Name))
+                if (string.IsNullOrEmpty(group.Name))
                 {
-					MessageBox.Show($"Please enter a name");
-					Courses.Remove(course);
+					MessageBox.Show("Please enter a name");
+					Groups.Remove(group);
 				}
-                else if (course.CourseId == 0)
+				else if (group.CourseId == 0)
+				{
+					MessageBox.Show("Please choose a course");
+					Groups.Remove(group);
+				}
+				else if (group.GroupId == 0)
                 {
 					try
 					{
 						_db.SaveChanges();
-						course.OnPropertyChanged("CourseId");
+						group.OnPropertyChanged("GroupId");
 					}
 					catch (DbUpdateException)
 					{
-						MessageBox.Show($"Course with \"{course.Name}\" name already exist");
-                        Courses.Remove(course);
+						MessageBox.Show($"Group with \"{group.Name}\" name already exist");
+                        Groups.Remove(group);
                     }
 				}
                 else
@@ -80,9 +89,9 @@ namespace UniversityWPF.ViewModel.Services
 					}
                     catch (DbUpdateException)
                     {
-						MessageBox.Show($"Course with \"{course.Name}\" name already exist");
-                        _db.Entry(course).Reload();
-                        course.OnPropertyChanged("Name");
+						MessageBox.Show($"Group with \"{group.Name}\" name already exist");
+                        _db.Entry(group).Reload();
+						group.OnPropertyChanged("Name");
                     }
                 }
             }
@@ -94,7 +103,7 @@ namespace UniversityWPF.ViewModel.Services
 				}
                 catch (DbUpdateException)
                 {
-					MessageBox.Show($"You can't remove course that has got groups");
+					MessageBox.Show($"You can't remove group that has got students");
 					SetActualDbContext();
                 }
             }
@@ -102,9 +111,9 @@ namespace UniversityWPF.ViewModel.Services
         private void SetActualDbContext()
         {
 			_db = _serviceProvider.GetRequiredService<UniversityContext>();
-            _db.Courses.Load();
-			Courses = _db.Courses.Local.ToObservableCollection();
-			Courses.CollectionChanged += (sender, e) => { SaveChangesInDb(e); };
+            _db.Groups.Load();
+			Groups = _db.Groups.Local.ToObservableCollection();
+			Groups.CollectionChanged += (sender, e) => { SaveChangesInDb(e); };
 		}
 	}
 }

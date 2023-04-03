@@ -32,6 +32,7 @@ namespace UniversityWPF
 														 options.UseSqlServer("Server=localhost;Database=University;Trusted_Connection=True;Encrypt=False;"),
 														 ServiceLifetime.Transient);
 				services.AddSingleton<ICourseService, CourseService>();
+				services.AddSingleton<IGroupService, GroupService>();
 				services.AddSingleton<ApplicationViewModel>();
 			})
 			.Build();
