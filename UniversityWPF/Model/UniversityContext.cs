@@ -15,11 +15,6 @@ public class UniversityContext : DbContext
 	{
 	}
 
-	//protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-	//{
-	//	optionsBuilder.UseSqlServer("Server=localhost;Database=University;Trusted_Connection=True;Encrypt=False;");
-	//}
-
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		modelBuilder.Entity<Course>(entity =>

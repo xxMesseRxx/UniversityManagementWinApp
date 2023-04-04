@@ -43,6 +43,11 @@ namespace UniversityWPF
 		{
 			_host.Start();
 
+			using (UniversityContext db = _host.Services.GetRequiredService<UniversityContext>())
+			{
+				db.Database.Migrate();
+			}
+
 			MainWindow = _host.Services.GetRequiredService<MainWindow>();
 			MainWindow.Show();
 

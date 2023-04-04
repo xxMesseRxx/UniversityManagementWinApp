@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!--Start: Horizontal TabItem style-->
+
+        <!--Start: Horizontal TabItem style-->
     <Style x:Key="HorizontalTabItem" TargetType="TabItem">
         <Setter Property="Padding" Value="50 10"/>
     </Style>
@@ -11,5 +12,15 @@
         <Setter Property="AutoGenerateColumns" Value="False"/>
         <Setter Property="IsReadOnly" Value="True"/>
     </Style>
+    <!--End: Main DataGrid style-->
+
+    <!--Start: Main CoursesDataGridInHome style-->
+    <!--<Style TargetType="DataGridRow" x:Key="CoursesDataGridInHome">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding ElementName=HomeTabGroupTable, Path=SelectedItem.CourseId}" Value="1">
+                <Setter Property="Background" Value="Red"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>-->
     <!--End: Main DataGrid style-->
 </ResourceDictionary>
