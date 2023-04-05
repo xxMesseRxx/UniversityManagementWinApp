@@ -99,7 +99,7 @@
                                                    Converter={StaticResource boolOppositeConverter}}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="RowEditEnding">
-                                <i:InvokeCommandAction Command="{Binding CourseService.SaveChangesCommand}"
+                                <i:InvokeCommandAction Command="{Binding CourseSaveChangesCommand}"
                                                        CommandParameter="{Binding ElementName=CoursesTable,
                                                                                   Path=SelectedItem}"/>
                             </i:EventTrigger>

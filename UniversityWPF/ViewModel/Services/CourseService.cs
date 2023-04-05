@@ -49,56 +49,80 @@ namespace UniversityWPF.ViewModel.Services
 			if (PropertyChanged != null)
 				PropertyChanged(this, new PropertyChangedEventArgs(prop));
 		}
-
-		private void SaveChangesInDb(object? obj = null)
+		public void SaveChangesInDb(object? obj = null)
         {
             if (obj is Course course)
             {
-                if (string.IsNullOrEmpty(course.Name))
-                {
-					MessageBox.Show($"You didn't enter a name");
-					Courses.Remove(course);
+				if (course.CourseId == 0)
+				{
+					AddCourseSaveChanges(course);
 				}
-                else if (course.CourseId == 0)
-                {
-					try
-					{
-						_db.SaveChanges();
-						course.OnPropertyChanged("CourseId");
-					}
-					catch (DbUpdateException)
-					{
-						MessageBox.Show($"Course with \"{course.Name}\" name already exist");
-                        Courses.Remove(course);
-                    }
+				else
+				{
+					EditingCourseSaveChanges(course);
 				}
-                else
-                {
-                    try
-                    {
-						_db.SaveChanges();
-					}
-                    catch (DbUpdateException)
-                    {
-						MessageBox.Show($"Course with \"{course.Name}\" name already exist");
-                        _db.Entry(course).Reload();
-                        course.OnPropertyChanged("Name");
-                    }
-                }
             }
             else if (obj is NotifyCollectionChangedEventArgs arg && arg.Action == NotifyCollectionChangedAction.Remove)
             {
-                try
-                {
-					_db.SaveChanges();
-				}
-                catch (DbUpdateException)
-                {
-					MessageBox.Show($"You can't remove course that has got groups");
-					SetActualDbContext();
-                }
+				RemoveActionSaveChanges();
             }
         }
+
+		private void AddCourseSaveChanges(Course course)
+		{
+			if (string.IsNullOrEmpty(course.Name))
+			{
+				Courses.Remove(course);
+				throw new ArgumentNullException("Course name", "You didn't enter a name");
+			}
+			else
+			{
+				try
+				{
+					_db.SaveChanges();
+					course.OnPropertyChanged("CourseId");
+				}
+				catch (DbUpdateException)
+				{
+					Courses.Remove(course);
+					throw new ArgumentException($"Course with \"{course.Name}\" name already exist", "Course name");
+				}
+			}
+		}
+		private void EditingCourseSaveChanges(Course course)
+		{
+			if (string.IsNullOrEmpty(course.Name))
+			{
+				_db.Entry(course).Reload();
+				course.OnPropertyChanged("Name");
+				throw new ArgumentNullException("Course name", "You didn't enter a name");
+			}
+			else
+			{
+				try
+				{
+					_db.SaveChanges();
+				}
+				catch (DbUpdateException)
+				{
+					string oldName = course.Name;
+					_db.Entry(course).Reload();
+					course.OnPropertyChanged("Name");
+					throw new ArgumentException($"Course with \"{oldName}\" name already exist", "Course name");
+				}
+			}
+		}
+		private void RemoveActionSaveChanges()
+		{
+			try
+			{
+				_db.SaveChanges();
+			}
+			catch (DbUpdateException)
+			{
+				SetActualDbContext();
+			}
+		}
         private void SetActualDbContext()
         {
 			_db = _serviceProvider.GetRequiredService<UniversityContext>();

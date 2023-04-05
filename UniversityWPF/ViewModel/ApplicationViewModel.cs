@@ -10,14 +10,43 @@ using UniversityWPF.Model;
 using System.Windows;
 using System.Collections.Specialized;
 using UniversityWPF.Library.Interfaces;
+using UniversityWPF.ViewModel.Services;
 
 namespace UniversityWPF.ViewModel
 {
     public class ApplicationViewModel
     {
-		public ICourseService CourseService { get; }
+        public ICourseService CourseService { get; }
 		public IGroupService GroupService { get; }
 		public IStudentService StudentService { get; }
+        public RelayCommand CourseSaveChangesCommand 
+        {
+            get
+            {
+                return _courseSaveChangesCommand ??
+                    (_courseSaveChangesCommand = new RelayCommand((obj) =>
+                    {
+                        try
+                        {
+                            CourseService.SaveChangesInDb(obj);
+                        }
+                        catch (ArgumentNullException ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
+                        catch (ArgumentException ex)
+                        {
+							MessageBox.Show(ex.Message);
+						}
+                        catch (InvalidOperationException ex)
+                        {
+							MessageBox.Show(ex.Message);
+						}
+                    }));
+            }
+        }
+
+        private RelayCommand _courseSaveChangesCommand;
 
 		public ApplicationViewModel(ICourseService courseService,
                                     IGroupService groupService,

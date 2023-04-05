@@ -14,7 +14,6 @@ namespace UniversityWPF.Model
 		public UniversityContext CreateDbContext(string[] args)
 		{
 			var optionsBuilder = new DbContextOptionsBuilder<UniversityContext>();
-
 			optionsBuilder.UseSqlServer("Server=localhost;Database=University;Trusted_Connection=True;Encrypt=False;");
 
 			return new UniversityContext(optionsBuilder.Options);
