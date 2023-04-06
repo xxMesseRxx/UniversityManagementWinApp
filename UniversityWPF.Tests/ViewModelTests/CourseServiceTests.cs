@@ -193,11 +193,11 @@ namespace UniversityWPF.Tests.ViewModelTests
 				dbCreator.CreateTestDB();
 				CourseService courseService = TestServicesCreator.GetCourseService();
 				ObservableCollection<Course> courses = courseService.Courses;
-				Course removingCourse = courses[2];
+				Course removedCourse = courses[2];
 				int expected = 8;
 
 				//Act
-				courses.Remove(removingCourse);
+				courses.Remove(removedCourse);
 
 				int actual = courses.Count();
 
@@ -219,11 +219,11 @@ namespace UniversityWPF.Tests.ViewModelTests
 				dbCreator.CreateTestDB();
 				CourseService courseService = TestServicesCreator.GetCourseService();
 				ObservableCollection<Course> courses = courseService.Courses;
-				Course removingCourse = courses[5];
+				Course removedCourse = courses[5];
 				int expected = 9;
 
 				//Act
-				courses.Remove(removingCourse);
+				courses.Remove(removedCourse);
 
 				courses = courseService.Courses;
 				int actual = courses.Count();
