@@ -38,7 +38,7 @@ namespace UniversityWPF.Tests.ViewModelTests
 		}
 
 		[TestMethod]
-		public void SaveChangesCommand_ChangeNameToCorName_CourseNameWasChangedExpected()
+		public void SaveChangesInDb_ChangeNameToCorName_CourseNameWasChangedExpected()
 		{
 			var dbCreator = new TestDBCreator();
 			try
@@ -46,13 +46,12 @@ namespace UniversityWPF.Tests.ViewModelTests
 				//Arrange
 				dbCreator.CreateTestDB();
 				CourseService courseService = TestServicesCreator.GetCourseService();
-				RelayCommand saveCmd = courseService.SaveChangesCommand;
 				ObservableCollection<Course> courses = courseService.Courses;
 				string expected = "New name";
 
 				//Act
 				courses[0].Name = expected;
-				saveCmd.Execute(courses[0]);
+				courseService.SaveChangesInDb(courses[0]);
 
 				string actual = courses[0].Name;
 
@@ -65,7 +64,8 @@ namespace UniversityWPF.Tests.ViewModelTests
 			}
 		}
 		[TestMethod]
-		public void SaveChangesCommand_ChangeNameToEmpty_CourseNameWasNotChangedExpected()
+		[ExpectedException(typeof(ArgumentNullException))]
+		public void SaveChangesInDb_ChangeNameToEmpty_ArgumentNullExceptionExpected()
 		{
 			var dbCreator = new TestDBCreator();
 			try
@@ -73,15 +73,160 @@ namespace UniversityWPF.Tests.ViewModelTests
 				//Arrange
 				dbCreator.CreateTestDB();
 				CourseService courseService = TestServicesCreator.GetCourseService();
-				RelayCommand saveCmd = courseService.SaveChangesCommand;
 				ObservableCollection<Course> courses = courseService.Courses;
-				string expected = courses[0].Name;
 
 				//Act
 				courses[0].Name = "";
-				saveCmd.Execute(courses[0]);
+				courseService.SaveChangesInDb(courses[0]);
+			}
+			finally
+			{
+				dbCreator.Dispose();
+			}
+		}
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
+		public void SaveChangesInDb_ChangeNameToExist_ArgumentExceptionExpected()
+		{
+			var dbCreator = new TestDBCreator();
+			try
+			{
+				//Arrange
+				dbCreator.CreateTestDB();
+				CourseService courseService = TestServicesCreator.GetCourseService();
+				ObservableCollection<Course> courses = courseService.Courses;
+				string existName = courses[1].Name;
 
-				string actual = courses[0].Name;
+				//Act
+				courses[0].Name = existName;
+				courseService.SaveChangesInDb(courses[0]);
+			}
+			finally
+			{
+				dbCreator.Dispose();
+			}
+		}
+
+		[TestMethod]
+		public void SaveChangesInDb_AddCourseWithCorName_CourseWasAddedExpected()
+		{
+			var dbCreator = new TestDBCreator();
+			try
+			{
+				//Arrange
+				dbCreator.CreateTestDB();
+				CourseService courseService = TestServicesCreator.GetCourseService();
+				ObservableCollection<Course> courses = courseService.Courses;
+				string expectedName = "New course 1";
+				int expectedCourseCount = 10;
+				Course newCourse = new Course { Name = expectedName };
+
+				//Act
+				courses.Add(newCourse);
+				courseService.SaveChangesInDb(newCourse);
+
+				string actualName = courses.Last().Name;
+				int actualCourseCount = courses.Count();
+
+				//Assert
+				Assert.AreEqual(expectedName, actualName);
+				Assert.AreEqual(expectedCourseCount, actualCourseCount);
+			}
+			finally
+			{
+				dbCreator.Dispose();
+			}
+		}
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentNullException))]
+		public void SaveChangesInDb_AddCourseWithEmptyName_ArgumentNullExceptionExpected()
+		{
+			var dbCreator = new TestDBCreator();
+			try
+			{
+				//Arrange
+				dbCreator.CreateTestDB();
+				CourseService courseService = TestServicesCreator.GetCourseService();
+				ObservableCollection<Course> courses = courseService.Courses;
+				Course newCourse = new Course { Name = "" };
+
+				//Act
+				courses.Add(newCourse);
+				courseService.SaveChangesInDb(newCourse);
+			}
+			finally
+			{
+				dbCreator.Dispose();
+			}
+		}
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
+		public void SaveChangesInDb_AddCourseWithExistName_ArgumentExceptionExpected()
+		{
+			var dbCreator = new TestDBCreator();
+			try
+			{
+				//Arrange
+				dbCreator.CreateTestDB();
+				CourseService courseService = TestServicesCreator.GetCourseService();
+				ObservableCollection<Course> courses = courseService.Courses;
+				string existName = courses[3].Name;
+				Course newCourse = new Course { Name = existName };
+
+				//Act
+				courses.Add(newCourse);
+				courseService.SaveChangesInDb(newCourse);
+			}
+			finally
+			{
+				dbCreator.Dispose();
+			}
+		}
+
+		[TestMethod]
+		public void SaveChangesInDb_RemoveCourseWithoutGroups_8CoursesExpected()
+		{
+			var dbCreator = new TestDBCreator();
+			try
+			{
+				//Arrange
+				dbCreator.CreateTestDB();
+				CourseService courseService = TestServicesCreator.GetCourseService();
+				ObservableCollection<Course> courses = courseService.Courses;
+				Course removingCourse = courses[2];
+				int expected = 8;
+
+				//Act
+				courses.Remove(removingCourse);
+
+				int actual = courses.Count();
+
+				//Assert
+				Assert.AreEqual(expected, actual);
+			}
+			finally
+			{
+				dbCreator.Dispose();
+			}
+		}
+		[TestMethod]
+		public void SaveChangesInDb_RemoveCourseWithGroups_CourseWasNotRemovedExpected()
+		{
+			var dbCreator = new TestDBCreator();
+			try
+			{
+				//Arrange
+				dbCreator.CreateTestDB();
+				CourseService courseService = TestServicesCreator.GetCourseService();
+				ObservableCollection<Course> courses = courseService.Courses;
+				Course removingCourse = courses[5];
+				int expected = 9;
+
+				//Act
+				courses.Remove(removingCourse);
+
+				courses = courseService.Courses;
+				int actual = courses.Count();
 
 				//Assert
 				Assert.AreEqual(expected, actual);

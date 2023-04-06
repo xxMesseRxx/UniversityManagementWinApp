@@ -19,7 +19,7 @@ namespace UniversityWPF.Tests
 			_services = new ServiceCollection()
 							.AddDbContext<UniversityContext>(options =>
 															 options.UseSqlServer("Server=localhost;Database=TestUniversity;Trusted_Connection=True;Encrypt=False;"),
-															 ServiceLifetime.Scoped);
+															 ServiceLifetime.Transient);
 		}
 
 		public static CourseService GetCourseService()
