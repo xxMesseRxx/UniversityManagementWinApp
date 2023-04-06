@@ -32,9 +32,7 @@ namespace UniversityWPF.ViewModel.Services
                 OnPropertyChanged();
             }
         }
-		public RelayCommand SaveChangesCommand { get { return _saveChangesCommand; } }
 
-		private RelayCommand _saveChangesCommand;
 		private UniversityContext _db;
         private ObservableCollection<Group> _groups;
         private IServiceProvider _serviceProvider;
@@ -44,8 +42,6 @@ namespace UniversityWPF.ViewModel.Services
 			_serviceProvider = provider;
 
 			SetActualDbContext();
-
-			_saveChangesCommand = new RelayCommand(SaveChangesInDb);
 		}
 
 		public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -53,62 +49,89 @@ namespace UniversityWPF.ViewModel.Services
 			if (PropertyChanged != null)
 				PropertyChanged(this, new PropertyChangedEventArgs(prop));
 		}
-
-		private void SaveChangesInDb(object? obj = null)
+		public void SaveChangesInDb(object? obj = null)
         {
             if (obj is Group group)
-            {
-                if (string.IsNullOrEmpty(group.Name))
+            {               
+				if (group.GroupId == 0)
                 {
-					MessageBox.Show("You didn't enter a name");
-					Groups.Remove(group);
-				}
-				else if (group.CourseId == 0)
-				{
-					MessageBox.Show("You didn't choose a course");
-					Groups.Remove(group);
-				}
-				else if (group.GroupId == 0)
-                {
-					try
-					{
-						_db.SaveChanges();
-						group.OnPropertyChanged("GroupId");
-					}
-					catch (DbUpdateException)
-					{
-						MessageBox.Show($"Group with \"{group.Name}\" name already exist");
-                        Groups.Remove(group);
-                    }
+					AddGroupSaveChanges(group);
 				}
                 else
                 {
-                    try
-                    {
-						_db.SaveChanges();
-					}
-                    catch (DbUpdateException)
-                    {
-						MessageBox.Show($"Group with \"{group.Name}\" name already exist");
-                        _db.Entry(group).Reload();
-						group.OnPropertyChanged("Name");
-                    }
-                }
+					EditingGroupSaveChanges(group);
+				}
             }
             else if (obj is NotifyCollectionChangedEventArgs arg && arg.Action == NotifyCollectionChangedAction.Remove)
             {
-                try
-                {
+				RemoveActionSaveChanges();
+			}
+        }
+
+		private void AddGroupSaveChanges(Group group)
+		{
+			if (string.IsNullOrEmpty(group.Name))
+			{
+				Groups.Remove(group);
+				throw new ArgumentNullException("Group name", "You didn't enter a group name");
+			}
+			else if (group.CourseId == 0)
+			{
+				Groups.Remove(group);
+				throw new ArgumentNullException("Course name", "You didn't choose a course");
+			}
+			else
+			{
+				try
+				{
+					_db.SaveChanges();
+					group.OnPropertyChanged("GroupId");
+				}
+				catch (DbUpdateException)
+				{
+					Groups.Remove(group);
+					throw new ArgumentException($"Group with \"{group.Name}\" name already exist");
+				}
+			}
+		}
+		private void EditingGroupSaveChanges(Group group)
+		{
+			if (string.IsNullOrEmpty(group.Name))
+			{
+				ReloadEntity(group);
+				throw new ArgumentNullException("Group name", "You didn't enter a group name");
+			}
+			else
+			{
+				try
+				{
 					_db.SaveChanges();
 				}
-                catch (DbUpdateException)
-                {
-					MessageBox.Show($"You can't remove group that has got students");
-					SetActualDbContext();
-                }
-            }
-        }
-        private void SetActualDbContext()
+				catch (DbUpdateException)
+				{
+					string oldName = group.Name;
+					ReloadEntity(group);
+					throw new ArgumentException($"Group with \"{oldName}\" name already exist");
+				}
+			}
+		}
+		private void RemoveActionSaveChanges()
+		{
+			try
+			{
+				_db.SaveChanges();
+			}
+			catch (DbUpdateException)
+			{
+				SetActualDbContext();
+			}
+		}
+		private void ReloadEntity(Group group)
+		{
+			_db.Entry(group).Reload();
+			group.OnPropertyChanged("Name");
+		}
+		private void SetActualDbContext()
         {
 			_db = _serviceProvider.GetRequiredService<UniversityContext>();
             _db.Groups.Load();

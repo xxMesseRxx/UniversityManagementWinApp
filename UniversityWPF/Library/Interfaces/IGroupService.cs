@@ -11,6 +11,7 @@ namespace UniversityWPF.Library.Interfaces
     public interface IGroupService
     {
         ObservableCollection<Group> Groups { get; set; }
-        RelayCommand SaveChangesCommand { get; }
-    }
+
+        void SaveChangesInDb(object? obj = null);
+	}
 }

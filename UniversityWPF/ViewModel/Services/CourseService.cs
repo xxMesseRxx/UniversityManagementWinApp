@@ -28,9 +28,7 @@ namespace UniversityWPF.ViewModel.Services
                 OnPropertyChanged();
             }
         }
-		public RelayCommand SaveChangesCommand { get { return _saveChangesCommand; } }
 
-		private RelayCommand _saveChangesCommand;
 		private UniversityContext _db;
         private ObservableCollection<Course> _courses;
         private IServiceProvider _serviceProvider;
@@ -40,8 +38,6 @@ namespace UniversityWPF.ViewModel.Services
 			_serviceProvider = provider;
 
 			SetActualDbContext();
-
-			_saveChangesCommand = new RelayCommand(SaveChangesInDb);
 		}
 
 		public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -93,8 +89,7 @@ namespace UniversityWPF.ViewModel.Services
 		{
 			if (string.IsNullOrEmpty(course.Name))
 			{
-				_db.Entry(course).Reload();
-				course.OnPropertyChanged("Name");
+				ReloadEntity(course);
 				throw new ArgumentNullException("Course name", "You didn't enter a name");
 			}
 			else
@@ -106,8 +101,7 @@ namespace UniversityWPF.ViewModel.Services
 				catch (DbUpdateException)
 				{
 					string oldName = course.Name;
-					_db.Entry(course).Reload();
-					course.OnPropertyChanged("Name");
+					ReloadEntity(course);
 					throw new ArgumentException($"Course with \"{oldName}\" name already exist", "Course name");
 				}
 			}
@@ -122,6 +116,11 @@ namespace UniversityWPF.ViewModel.Services
 			{
 				SetActualDbContext();
 			}
+		}
+		private void ReloadEntity(Course course)
+		{
+			_db.Entry(course).Reload();
+			course.OnPropertyChanged("Name");
 		}
         private void SetActualDbContext()
         {

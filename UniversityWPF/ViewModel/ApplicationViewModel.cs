@@ -38,15 +38,57 @@ namespace UniversityWPF.ViewModel
                         {
 							MessageBox.Show(ex.Message);
 						}
-                        catch (InvalidOperationException ex)
-                        {
-							MessageBox.Show(ex.Message);
-						}
                     }));
             }
         }
+		public RelayCommand GroupSaveChangesCommand
+		{
+			get
+			{
+				return _groupSaveChangesCommand ??
+					(_groupSaveChangesCommand = new RelayCommand((obj) =>
+					{
+						try
+						{
+							GroupService.SaveChangesInDb(obj);
+						}
+						catch (ArgumentNullException ex)
+						{
+							MessageBox.Show(ex.Message);
+						}
+						catch (ArgumentException ex)
+						{
+							MessageBox.Show(ex.Message);
+						}
+					}));
+			}
+		}
+		public RelayCommand StudentSaveChangesCommand
+		{
+			get
+			{
+				return _studentSaveChangesCommand ??
+					(_studentSaveChangesCommand = new RelayCommand((obj) =>
+					{
+						try
+						{
+							StudentService.SaveChangesInDb(obj);
+						}
+						catch (ArgumentNullException ex)
+						{
+							MessageBox.Show(ex.Message);
+						}
+						catch (ArgumentException ex)
+						{
+							MessageBox.Show(ex.Message);
+						}
+					}));
+			}
+		}
 
-        private RelayCommand _courseSaveChangesCommand;
+		private RelayCommand _courseSaveChangesCommand;
+		private RelayCommand _groupSaveChangesCommand;
+		private RelayCommand _studentSaveChangesCommand;
 
 		public ApplicationViewModel(ICourseService courseService,
                                     IGroupService groupService,

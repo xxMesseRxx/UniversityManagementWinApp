@@ -131,7 +131,7 @@
                                                    Converter={StaticResource boolOppositeConverter}}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="RowEditEnding">
-                                <i:InvokeCommandAction Command="{Binding GroupService.SaveChangesCommand}"
+                                <i:InvokeCommandAction Command="{Binding GroupSaveChangesCommand}"
                                                        CommandParameter="{Binding ElementName=GroupsTable,
                                                                                   Path=SelectedItem}"/>
                             </i:EventTrigger>
@@ -178,7 +178,7 @@
                                                    Converter={StaticResource boolOppositeConverter}}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="RowEditEnding">
-                                <i:InvokeCommandAction Command="{Binding StudentService.SaveChangesCommand}"
+                                <i:InvokeCommandAction Command="{Binding StudentSaveChangesCommand}"
                                                        CommandParameter="{Binding ElementName=StudentsTable,
                                                                                   Path=SelectedItem}"/>
                             </i:EventTrigger>

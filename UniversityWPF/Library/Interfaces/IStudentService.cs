@@ -11,6 +11,7 @@ namespace UniversityWPF.Library.Interfaces
     public interface IStudentService
     {
         ObservableCollection<Student> Students { get; set; }
-        RelayCommand SaveChangesCommand { get; }
-    }
+
+        public void SaveChangesInDb(object? obj = null);
+	}
 }

@@ -32,9 +32,7 @@ namespace UniversityWPF.ViewModel.Services
                 OnPropertyChanged();
             }
         }
-		public RelayCommand SaveChangesCommand { get { return _saveChangesCommand; } }
 
-		private RelayCommand _saveChangesCommand;
 		private UniversityContext _db;
         private ObservableCollection<Student> _students;
         private IServiceProvider _serviceProvider;
@@ -44,8 +42,6 @@ namespace UniversityWPF.ViewModel.Services
 			_serviceProvider = provider;
 
 			SetActualDbContext();
-
-			_saveChangesCommand = new RelayCommand(SaveChangesInDb);
 		}
 
 		public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -53,42 +49,76 @@ namespace UniversityWPF.ViewModel.Services
 			if (PropertyChanged != null)
 				PropertyChanged(this, new PropertyChangedEventArgs(prop));
 		}
-
-		private void SaveChangesInDb(object? obj = null)
+		public void SaveChangesInDb(object? obj = null)
         {
             if (obj is Student student)
             {
-                if (string.IsNullOrEmpty(student.FirstName))
-                {
-					MessageBox.Show("You didn't enter a first name");
-					Students.Remove(student);
-				}
-				else if (string.IsNullOrEmpty(student.LastName))
+				if (student.StudentId == 0)
 				{
-					MessageBox.Show("You didn't enter a last name");
-					Students.Remove(student);
-				}
-				else if (student.GroupId == 0)
-				{
-					MessageBox.Show("You didn't choose a course");
-					Students.Remove(student);
-				}
-				else if (student.StudentId == 0)
-				{
-					_db.SaveChanges();
-					student.OnPropertyChanged("StudentId");
+					AddStudentSaveChanges(student);
 				}
 				else
                 {
-					_db.SaveChanges();
+					EditingStudentSaveChanges(student);
                 }
             }
             else if (obj is NotifyCollectionChangedEventArgs arg && arg.Action == NotifyCollectionChangedAction.Remove)
             {
-				_db.SaveChanges();
-            }
+				RemoveActionSaveChanges();
+			}
         }
-        private void SetActualDbContext()
+
+		private void AddStudentSaveChanges(Student student)
+		{
+			if (string.IsNullOrEmpty(student.FirstName))
+			{
+				Students.Remove(student);
+				throw new ArgumentNullException("First name", "You didn't enter a first name");
+			}
+			else if (string.IsNullOrEmpty(student.LastName))
+			{
+				Students.Remove(student);
+				throw new ArgumentNullException("Last name", "You didn't enter a last name");
+			}
+			else if (student.GroupId == 0)
+			{
+				Students.Remove(student);
+				throw new ArgumentNullException("Group name", "You didn't choose a group");
+			}
+			else
+			{
+				_db.SaveChanges();
+				student.OnPropertyChanged("StudentId");
+			}
+		}
+		private void EditingStudentSaveChanges(Student student)
+		{
+			if (string.IsNullOrEmpty(student.FirstName))
+			{
+				ReloadEntity(student);
+				throw new ArgumentNullException("First name", "You didn't enter a first name");
+			}
+			else if (string.IsNullOrEmpty(student.LastName))
+			{
+				ReloadEntity(student);
+				throw new ArgumentNullException("Last name", "You didn't enter a last name");
+			}
+			else
+			{
+				_db.SaveChanges();
+			}
+		}
+		private void RemoveActionSaveChanges()
+		{
+			_db.SaveChanges();
+		}
+		private void ReloadEntity(Student student)
+		{
+			_db.Entry(student).Reload();
+			student.OnPropertyChanged("FirstName");
+			student.OnPropertyChanged("LastName");
+		}
+		private void SetActualDbContext()
         {
 			_db = _serviceProvider.GetRequiredService<UniversityContext>();
             _db.Students.Load();
