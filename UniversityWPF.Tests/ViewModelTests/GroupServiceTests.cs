@@ -63,6 +63,32 @@ namespace UniversityWPF.Tests.ViewModelTests
 			}
 		}
 		[TestMethod]
+		public void SaveChangesInDb_ChangeCourseId_CourseIdWasChangedExpected()
+		{
+			var dbCreator = new TestDBCreator();
+			try
+			{
+				//Arrange
+				dbCreator.CreateTestDB();
+				GroupService groupService = TestServicesCreator.GetGroupService();
+				ObservableCollection<Group> groups = groupService.Groups;
+				int expected = 7;
+
+				//Act
+				groups[0].CourseId = expected;
+				groupService.SaveChangesInDb(groups[0]);
+
+				int actual = groups[0].CourseId;
+
+				//Assert
+				Assert.AreEqual(expected, actual);
+			}
+			finally
+			{
+				dbCreator.Dispose();
+			}
+		}
+		[TestMethod]
 		[ExpectedException(typeof(ArgumentNullException))]
 		public void SaveChangesInDb_ChangeNameToEmpty_ArgumentNullExceptionExpected()
 		{
