@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:UniversityWPF"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
-        Background="{StaticResource PrimaryColor}">
+        Title="University" Height="550" Width="900"
+        Background="{StaticResource PrimaryAzureColor}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -21,15 +21,15 @@
         <StatusBar DockPanel.Dock="Bottom">
             <TextBlock Text="{Binding StringFormat=Current page - {0},
                                       ElementName=MainTabs, 
-                                      Path=SelectedItem.Header}"/>
-            <TextBlock x:Name="statBarAddInfo"/>
+                                      Path=SelectedItem.Header}"
+                       Style="{x:Null}"/>
         </StatusBar>
         <!--End: Footer-->
 
         <!--Start: Body-->
         <TabControl x:Name="MainTabs" TabStripPlacement="Left">
             <!--Start: Home tab-->
-            <TabItem Header="Home" Style="{StaticResource HorizontalTabItemStyle}">
+            <TabItem Header="Home">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -41,7 +41,7 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <!--Start: Left column-->
-                    <StackPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center">
+                    <StackPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <TextBlock Text="Courses"/>
                         <TextBlock Text="{Binding StringFormat=Number of courses: {0}, Path=CourseService.Courses.Count}"/>
                     </StackPanel>
@@ -54,7 +54,7 @@
                     </DataGrid>
                     <!--End: Left column-->
                     <!--Start: Central column-->
-                    <StackPanel Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center">
+                    <StackPanel Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <TextBlock Text="Groups"/>
                         <TextBlock Text="{Binding StringFormat=Number of groups: {0}, Path=GroupService.Groups.Count}"/>
                     </StackPanel>
@@ -68,7 +68,7 @@
                     </DataGrid>
                     <!--End: Central column-->
                     <!--Start: Right column-->
-                    <StackPanel Grid.Column="2" Grid.Row="0" HorizontalAlignment="Center">
+                    <StackPanel Grid.Column="2" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <TextBlock Text="Students"/>
                         <TextBlock Text="{Binding StringFormat=Number of students: {0}, Path=StudentService.Students.Count}"/>
                     </StackPanel>
@@ -86,7 +86,7 @@
             </TabItem>
             <!--End: Home tab-->
             <!--Start: Course tab-->
-            <TabItem Header="Courses" Style="{StaticResource HorizontalTabItemStyle}">
+            <TabItem Header="Courses">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -120,7 +120,7 @@
             </TabItem>
             <!--End: Course tab-->
             <!--Start: Groups tab-->
-            <TabItem Header="Groups" Style="{StaticResource HorizontalTabItemStyle}">
+            <TabItem Header="Groups">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -167,7 +167,7 @@
             </TabItem>
             <!--End: Groups tab-->
             <!--Start: Students tab-->
-            <TabItem Header="Students" Style="{StaticResource HorizontalTabItemStyle}">
+            <TabItem Header="Students">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition/>

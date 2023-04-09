@@ -3,6 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:UniversityWPF">
     <Application.Resources>
-        <SolidColorBrush x:Key="PrimaryColor" Color="#FFE1EFEC"/>
+        <SolidColorBrush x:Key="PrimaryAzureColor" Color="#FFB1EADF"/>
     </Application.Resources>
 </Application>
