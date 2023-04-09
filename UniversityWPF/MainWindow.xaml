@@ -4,23 +4,18 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UniversityWPF"
-        xmlns:conv="clr-namespace:UniversityWPF.Library.Converters"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        Background="{StaticResource PrimaryColor}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles/MainStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            
-            <conv:BoolToOppositeBoolConverter x:Key="boolOppositeConverter"/>
         </ResourceDictionary>
     </Window.Resources>
     <DockPanel LastChildFill="True">
-        <!--Start: Header-->
-        <TextBlock DockPanel.Dock="Top" Text="University"/>
-        <!--End: Header-->
 
         <!--Start: Footer-->
         <StatusBar DockPanel.Dock="Bottom">
@@ -34,7 +29,7 @@
         <!--Start: Body-->
         <TabControl x:Name="MainTabs" TabStripPlacement="Left">
             <!--Start: Home tab-->
-            <TabItem Header="Home" Style="{StaticResource HorizontalTabItem}">
+            <TabItem Header="Home" Style="{StaticResource HorizontalTabItemStyle}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -64,7 +59,8 @@
                         <TextBlock Text="{Binding StringFormat=Number of groups: {0}, Path=GroupService.Groups.Count}"/>
                     </StackPanel>
                     <DataGrid x:Name="HomeTabGroupTable" Grid.Column="1" Grid.Row="1" 
-                              ItemsSource="{Binding GroupService.Groups}">
+                              ItemsSource="{Binding GroupService.Groups}"
+                              RowStyle="{StaticResource HomeTabGroupTableRowStyle}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Id" Binding="{Binding GroupId}"/>
                             <DataGridTextColumn Header="Group name" Width="*" Binding="{Binding Name}"/>
@@ -76,7 +72,9 @@
                         <TextBlock Text="Students"/>
                         <TextBlock Text="{Binding StringFormat=Number of students: {0}, Path=StudentService.Students.Count}"/>
                     </StackPanel>
-                    <DataGrid Grid.Column="2" Grid.Row="1" ItemsSource="{Binding StudentService.Students}">
+                    <DataGrid x:Name="HomeTabStudentTable" Grid.Column="2" Grid.Row="1"
+                              ItemsSource="{Binding StudentService.Students}"
+                              RowStyle="{StaticResource HomeTabStudentTableRowStyle}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Id" Binding="{Binding StudentId}"/>
                             <DataGridTextColumn Header="First name" Width="*" Binding="{Binding FirstName}"/>
@@ -88,7 +86,7 @@
             </TabItem>
             <!--End: Home tab-->
             <!--Start: Course tab-->
-            <TabItem Header="Courses" Style="{StaticResource HorizontalTabItem}">
+            <TabItem Header="Courses" Style="{StaticResource HorizontalTabItemStyle}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -109,7 +107,9 @@
                             <DataGridTextColumn Header="Course name"
                                                 Binding="{Binding Name, UpdateSourceTrigger=LostFocus}"/>
                             <DataGridTextColumn Header="Description" Width="*" 
-                                                Binding="{Binding Description, UpdateSourceTrigger=LostFocus}"/>
+                                                Binding="{Binding Description, UpdateSourceTrigger=LostFocus}"
+                                                ElementStyle="{StaticResource WrapTextBlockStyle}"
+                                                EditingElementStyle="{StaticResource WrapTextBoxStyle}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                     <WrapPanel Grid.Row="1" HorizontalAlignment="Right">
@@ -120,7 +120,7 @@
             </TabItem>
             <!--End: Course tab-->
             <!--Start: Groups tab-->
-            <TabItem Header="Groups" Style="{StaticResource HorizontalTabItem}">
+            <TabItem Header="Groups" Style="{StaticResource HorizontalTabItemStyle}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -167,7 +167,7 @@
             </TabItem>
             <!--End: Groups tab-->
             <!--Start: Students tab-->
-            <TabItem Header="Students" Style="{StaticResource HorizontalTabItem}">
+            <TabItem Header="Students" Style="{StaticResource HorizontalTabItemStyle}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
