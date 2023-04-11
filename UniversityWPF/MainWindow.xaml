@@ -47,6 +47,13 @@
                     </StackPanel>
                     <DataGrid x:Name="HomeTabCourseTable" Grid.Column="0" Grid.Row="1"
                               ItemsSource="{Binding CourseService.Courses}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectedCellsChanged">
+                                <i:InvokeCommandAction Command="{Binding SetGroupsByCourseIdCommand}"
+                                                       CommandParameter="{Binding ElementName=HomeTabCourseTable,
+                                                                                  Path=SelectedItem.CourseId}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Id" Binding="{Binding CourseId}"/>
                             <DataGridTextColumn Header="Course name" Width="*" Binding="{Binding Name}"/>
@@ -56,11 +63,17 @@
                     <!--Start: Central column-->
                     <StackPanel Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <TextBlock Text="Groups"/>
-                        <TextBlock Text="{Binding StringFormat=Number of groups: {0}, Path=GroupService.Groups.Count}"/>
+                        <TextBlock Text="{Binding StringFormat=Number of groups: {0}, Path=GroupsWithCourseId.Count}"/>
                     </StackPanel>
                     <DataGrid x:Name="HomeTabGroupTable" Grid.Column="1" Grid.Row="1" 
-                              ItemsSource="{Binding GroupService.Groups}"
-                              RowStyle="{StaticResource HomeTabGroupTableRowStyle}">
+                              ItemsSource="{Binding GroupsWithCourseId}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectedCellsChanged">
+                                <i:InvokeCommandAction Command="{Binding SetStudentsByGroupIdCommand}"
+                                                       CommandParameter="{Binding ElementName=HomeTabGroupTable,
+                                                                                  Path=SelectedItem.GroupId}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Id" Binding="{Binding GroupId}"/>
                             <DataGridTextColumn Header="Group name" Width="*" Binding="{Binding Name}"/>
@@ -70,11 +83,10 @@
                     <!--Start: Right column-->
                     <StackPanel Grid.Column="2" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <TextBlock Text="Students"/>
-                        <TextBlock Text="{Binding StringFormat=Number of students: {0}, Path=StudentService.Students.Count}"/>
+                        <TextBlock Text="{Binding StringFormat=Number of students: {0}, Path=StudentsWithGroupId.Count}"/>
                     </StackPanel>
                     <DataGrid x:Name="HomeTabStudentTable" Grid.Column="2" Grid.Row="1"
-                              ItemsSource="{Binding StudentService.Students}"
-                              RowStyle="{StaticResource HomeTabStudentTableRowStyle}">
+                              ItemsSource="{Binding StudentsWithGroupId}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Id" Binding="{Binding StudentId}"/>
                             <DataGridTextColumn Header="First name" Width="*" Binding="{Binding FirstName}"/>

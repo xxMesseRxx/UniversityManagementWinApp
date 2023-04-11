@@ -11,12 +11,40 @@ using System.Windows;
 using System.Collections.Specialized;
 using UniversityWPF.Library.Interfaces;
 using UniversityWPF.ViewModel.Services;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace UniversityWPF.ViewModel
 {
-    public class ApplicationViewModel
+    public class ApplicationViewModel : INotifyPropertyChanged
     {
-        public ICourseService CourseService { get; }
+		public event PropertyChangedEventHandler? PropertyChanged;
+
+		public ObservableCollection<Group> GroupsWithCourseId
+		{
+			get
+			{
+				return _groupsWithCourseId;
+			}
+			set
+			{
+				_groupsWithCourseId = value;
+				OnPropertyChanged();
+			}
+		}
+		public ObservableCollection<Student> StudentsWithGroupId
+		{
+			get
+			{
+				return _studentsWithGroupId;
+			}
+			set
+			{
+				_studentsWithGroupId = value;
+				OnPropertyChanged();
+			}
+		}
+		public ICourseService CourseService { get; }
 		public IGroupService GroupService { get; }
 		public IStudentService StudentService { get; }
         public RelayCommand CourseSaveChangesCommand 
@@ -63,6 +91,20 @@ namespace UniversityWPF.ViewModel
 					}));
 			}
 		}
+		public RelayCommand SetGroupsByCourseIdCommand
+		{
+			get
+			{
+				return _setGroupsByCourseIdCommand ??
+					(_setGroupsByCourseIdCommand = new RelayCommand((courseId) =>
+					{
+						if (courseId is int id)
+						{
+							GroupsWithCourseId = GroupService.GetGroupsByCourseId(id);
+						}
+					}));
+			}
+		}
 		public RelayCommand StudentSaveChangesCommand
 		{
 			get
@@ -85,10 +127,28 @@ namespace UniversityWPF.ViewModel
 					}));
 			}
 		}
+		public RelayCommand SetStudentsByGroupIdCommand
+		{
+			get
+			{
+				return _setStudentsByGroupIdCommand ??
+					(_setStudentsByGroupIdCommand = new RelayCommand((groupId) =>
+					{
+						if (groupId is int id)
+						{
+							StudentsWithGroupId = StudentService.GetStudentsByGroupId(id);
+						}
+					}));
+			}
+		}
 
+		private ObservableCollection<Group> _groupsWithCourseId;
+		private ObservableCollection<Student> _studentsWithGroupId;
 		private RelayCommand _courseSaveChangesCommand;
 		private RelayCommand _groupSaveChangesCommand;
+		private RelayCommand _setGroupsByCourseIdCommand;
 		private RelayCommand _studentSaveChangesCommand;
+		private RelayCommand _setStudentsByGroupIdCommand;
 
 		public ApplicationViewModel(ICourseService courseService,
                                     IGroupService groupService,
@@ -98,5 +158,11 @@ namespace UniversityWPF.ViewModel
             GroupService = groupService;
             StudentService = studentService;
         }
-    }
+
+		public void OnPropertyChanged([CallerMemberName] string prop = "")
+		{
+			if (PropertyChanged != null)
+				PropertyChanged(this, new PropertyChangedEventArgs(prop));
+		}
+	}
 }

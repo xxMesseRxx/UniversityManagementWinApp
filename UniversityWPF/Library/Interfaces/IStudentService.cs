@@ -12,6 +12,7 @@ namespace UniversityWPF.Library.Interfaces
     {
         ObservableCollection<Student> Students { get; set; }
 
-        public void SaveChangesInDb(object? obj = null);
+        void SaveChangesInDb(object? obj = null);
+        ObservableCollection<Student> GetStudentsByGroupId(int groupId);
 	}
 }

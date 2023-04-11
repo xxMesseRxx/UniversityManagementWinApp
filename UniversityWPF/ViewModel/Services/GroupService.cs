@@ -67,6 +67,10 @@ namespace UniversityWPF.ViewModel.Services
 				RemoveActionSaveChanges();
 			}
         }
+		public ObservableCollection<Group> GetGroupsByCourseId(int courseId)
+		{
+			return new ObservableCollection<Group>(Groups.Where(g => g.CourseId == courseId));
+		}
 
 		private void AddGroupSaveChanges(Group group)
 		{

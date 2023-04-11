@@ -4,7 +4,6 @@
 
     <!--Converters-->
     <conv:BoolToOppositeBoolConverter x:Key="boolOppositeConverter"/>
-    <conv:MultiValueEqualityConverter x:Key="multiValueEqualityConverter"/>
 
     <!--Colors-->
     <SolidColorBrush x:Key="SecondaryAzureColor" Color="#FFEBFFFD"/>
@@ -138,38 +137,6 @@
         <Setter Property="TextWrapping" Value="Wrap"/>
     </Style>
     <!--End: Wrap text for TextBox style-->
-
-    <!--Start: Row style for group table in home tab-->
-    <Style x:Key="HomeTabGroupTableRowStyle" TargetType="DataGridRow">
-        <Style.Triggers>
-            <DataTrigger Value="True">
-                <DataTrigger.Binding>
-                    <MultiBinding Converter="{StaticResource multiValueEqualityConverter}">
-                        <Binding ElementName="HomeTabCourseTable" Path="SelectedItem.CourseId"/>
-                        <Binding RelativeSource="{RelativeSource Mode=Self}" Path="DataContext.CourseId"/>
-                    </MultiBinding>
-                </DataTrigger.Binding>
-                <Setter Property="Foreground" Value="red"/>
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-    <!--End: Row style for group table in home tab-->
-
-    <!--Start: Row style for student table in home tab-->
-    <Style x:Key="HomeTabStudentTableRowStyle" TargetType="DataGridRow">
-        <Style.Triggers>
-            <DataTrigger Value="True">
-                <DataTrigger.Binding>
-                    <MultiBinding Converter="{StaticResource multiValueEqualityConverter}">
-                        <Binding ElementName="HomeTabGroupTable" Path="SelectedItem.GroupId"/>
-                        <Binding RelativeSource="{RelativeSource Mode=Self}" Path="DataContext.GroupId"/>
-                    </MultiBinding>
-                </DataTrigger.Binding>
-                <Setter Property="Foreground" Value="red"/>
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-    <!--End: Row style for student table in home tab-->
 
     <!--Start: Main DataGridCell style-->
     <Style TargetType="DataGridCell">
