@@ -13,6 +13,7 @@ using UniversityWPF.Library.Interfaces;
 using UniversityWPF.ViewModel.Services;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using UniversityWPF.Windows.CourseWindows;
 
 namespace UniversityWPF.ViewModel
 {
@@ -47,28 +48,26 @@ namespace UniversityWPF.ViewModel
 		public ICourseService CourseService { get; }
 		public IGroupService GroupService { get; }
 		public IStudentService StudentService { get; }
-        public RelayCommand CourseSaveChangesCommand 
-        {
-            get
-            {
-                return _courseSaveChangesCommand ??
-                    (_courseSaveChangesCommand = new RelayCommand((obj) =>
-                    {
-                        try
-                        {
-                            CourseService.SaveChangesInDb(obj);
-                        }
-                        catch (ArgumentNullException ex)
-                        {
-                            MessageBox.Show(ex.Message);
-                        }
-                        catch (ArgumentException ex)
-                        {
-							MessageBox.Show(ex.Message);
+		public RelayCommand EditCourseCommand
+		{
+			get
+			{
+				return _editCourseCommand ??
+					(_editCourseCommand = new RelayCommand((course) =>
+					{
+						if (course is Course c)
+						{
+							EditCourseWindow editCourseWindow = new EditCourseWindow(c);
+
+							if (editCourseWindow.ShowDialog() is true)
+							{
+								CourseSaveChanges(c);
+							}
 						}
-                    }));
-            }
-        }
+
+					}));
+			}
+		}
 		public RelayCommand GroupSaveChangesCommand
 		{
 			get
@@ -144,7 +143,7 @@ namespace UniversityWPF.ViewModel
 
 		private ObservableCollection<Group> _groupsWithCourseId;
 		private ObservableCollection<Student> _studentsWithGroupId;
-		private RelayCommand _courseSaveChangesCommand;
+		private RelayCommand _editCourseCommand;
 		private RelayCommand _groupSaveChangesCommand;
 		private RelayCommand _setGroupsByCourseIdCommand;
 		private RelayCommand _studentSaveChangesCommand;
@@ -163,6 +162,22 @@ namespace UniversityWPF.ViewModel
 		{
 			if (PropertyChanged != null)
 				PropertyChanged(this, new PropertyChangedEventArgs(prop));
+		}
+
+		private void CourseSaveChanges(Course course)
+		{
+			try
+			{
+				CourseService.SaveChangesInDb(course);
+			}
+			catch (ArgumentNullException ex)
+			{
+				MessageBox.Show(ex.Message);
+			}
+			catch (ArgumentException ex)
+			{
+				MessageBox.Show(ex.Message);
+			}
 		}
 	}
 }

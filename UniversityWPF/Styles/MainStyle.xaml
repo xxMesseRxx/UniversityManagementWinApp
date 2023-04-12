@@ -12,6 +12,16 @@
     <SolidColorBrush x:Key="PrimaryTextColor" Color="Black"/>
     <SolidColorBrush x:Key="SecondaryTextColor" Color="#FF0B6D5D"/>
 
+    <!--Start: Main Button style-->
+    <Style TargetType="Button">
+        <Setter Property="Margin" Value="0 0 10 5"/>
+        <Setter Property="MinHeight" Value="30"/>
+        <Setter Property="MinWidth" Value="70"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+    <!--End: Main Button style-->
+
     <!--Start: Main TextBlock style-->
     <Style TargetType="TextBlock">
         <Setter Property="FontSize" Value="14"/>
