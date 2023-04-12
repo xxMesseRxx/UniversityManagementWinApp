@@ -15,6 +15,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using UniversityWPF.Windows.CourseWindows;
 using UniversityWPF.Windows.GroupWindows;
+using UniversityWPF.Windows.StudentWindows;
 
 namespace UniversityWPF.ViewModel
 {
@@ -179,24 +180,53 @@ namespace UniversityWPF.ViewModel
 					}));
 			}
 		}
-		public RelayCommand StudentSaveChangesCommand
+		public RelayCommand AddStudentCommand
 		{
 			get
 			{
-				return _studentSaveChangesCommand ??
-					(_studentSaveChangesCommand = new RelayCommand((obj) =>
+				return _addStudentCommand ??
+					(_addStudentCommand = new RelayCommand((obj) =>
 					{
-						try
+						Student newStudent = new Student();
+						AddStudentWindow addStudentWindow = new AddStudentWindow(newStudent, GroupService.Groups);
+
+						if (addStudentWindow.ShowDialog() is true)
 						{
-							StudentService.SaveChangesInDb(obj);
+							StudentService.Students.Add(newStudent);
+							StudentSaveChanges(newStudent);
 						}
-						catch (ArgumentNullException ex)
+					}));
+			}
+		}
+		public RelayCommand EditStudentCommand
+		{
+			get
+			{
+				return _editStudentCommand ??
+					(_editStudentCommand = new RelayCommand((student) =>
+					{
+						if (student is Student s)
 						{
-							MessageBox.Show(ex.Message);
+							EditStudentWindow editStudentWindow = new EditStudentWindow(s, GroupService.Groups);
+
+							if (editStudentWindow.ShowDialog() is true)
+							{
+								StudentSaveChanges(s);
+							}
 						}
-						catch (ArgumentException ex)
+					}));
+			}
+		}
+		public RelayCommand RemoveStudentCommand
+		{
+			get
+			{
+				return _removeStudentCommand ??
+					(_removeStudentCommand = new RelayCommand((student) =>
+					{
+						if (student is Student s)
 						{
-							MessageBox.Show(ex.Message);
+							StudentService.Students.Remove(s);
 						}
 					}));
 			}
@@ -225,7 +255,9 @@ namespace UniversityWPF.ViewModel
 		private RelayCommand _editGroupCommand;
 		private RelayCommand _removeGroupCommand;
 		private RelayCommand _setGroupsByCourseIdCommand;
-		private RelayCommand _studentSaveChangesCommand;
+		private RelayCommand _addStudentCommand;
+		private RelayCommand _editStudentCommand;
+		private RelayCommand _removeStudentCommand;
 		private RelayCommand _setStudentsByGroupIdCommand;
 
 		public ApplicationViewModel(ICourseService courseService,
@@ -263,6 +295,21 @@ namespace UniversityWPF.ViewModel
 			try
 			{
 				GroupService.SaveChangesInDb(group);
+			}
+			catch (ArgumentNullException ex)
+			{
+				MessageBox.Show(ex.Message);
+			}
+			catch (ArgumentException ex)
+			{
+				MessageBox.Show(ex.Message);
+			}
+		}
+		private void StudentSaveChanges(Student student)
+		{
+			try
+			{
+				StudentService.SaveChangesInDb(student);
 			}
 			catch (ArgumentNullException ex)
 			{

@@ -1,0 +1,36 @@
+﻿<Window x:Class="UniversityWPF.Windows.StudentWindows.AddStudentWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UniversityWPF.Windows.StudentWindows"
+        mc:Ignorable="d"
+        Title="AddStudent" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Styles/ModalWindowsStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <StackPanel Orientation="Vertical" Margin="5">
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="First name: "/>
+            <TextBox Text="{Binding FirstName}"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Last name: "/>
+            <TextBox Text="{Binding LastName}"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Group name: "/>
+            <ComboBox x:Name="GroupsBox" SelectedValuePath="GroupId"
+                      DisplayMemberPath="Name"
+                      SelectedValue="{Binding GroupId}"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Button Content="Save" IsDefault="True" Click="BtnSave_Click"/>
+            <Button Content="Cancel" IsCancel="True"/>
+        </StackPanel>
+    </StackPanel>
+</Window>
