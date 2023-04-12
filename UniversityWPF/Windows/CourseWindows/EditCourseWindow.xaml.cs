@@ -8,15 +8,6 @@ namespace UniversityWPF.Windows.CourseWindows
 	/// </summary>
 	public partial class EditCourseWindow : Window
 	{
-		public string CourseName
-		{
-			get { return NameBox.Text; }
-		}
-		public string CourseDescription
-		{
-			get { return DescriptionBox.Text; }
-		}
-
 		public EditCourseWindow(Course course)
 		{
 			InitializeComponent();

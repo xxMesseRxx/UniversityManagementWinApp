@@ -115,6 +115,7 @@ namespace UniversityWPF.ViewModel.Services
 			catch (DbUpdateException)
 			{
 				SetActualDbContext();
+				throw new InvalidOperationException("You can't remove course, which contains at least 1 group");
 			}
 		}
 		private void ReloadEntity(Course course)

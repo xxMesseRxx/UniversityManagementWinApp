@@ -116,10 +116,11 @@
                         </DataGrid.Columns>
                     </DataGrid>
                     <WrapPanel Grid.Row="1" HorizontalAlignment="Right">
-                        <Button Content="Add"/>
+                        <Button Content="Add" Command="{Binding AddCourseCommand}"/>
                         <Button Content="Edit" Command="{Binding EditCourseCommand}"
                                 CommandParameter="{Binding ElementName=CoursesTable, Path=SelectedItem}"/>
-                        <Button Content="Remove"/>
+                        <Button Content="Remove" Command="{Binding RemoveCourseCommand}"
+                                CommandParameter="{Binding ElementName=CoursesTable, Path=SelectedItem}"/>
                     </WrapPanel>
                 </Grid>
             </TabItem>

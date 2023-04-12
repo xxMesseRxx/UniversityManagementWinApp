@@ -48,6 +48,24 @@ namespace UniversityWPF.ViewModel
 		public ICourseService CourseService { get; }
 		public IGroupService GroupService { get; }
 		public IStudentService StudentService { get; }
+		public RelayCommand AddCourseCommand
+		{
+			get
+			{
+				return _addCourseCommand ??
+					(_addCourseCommand = new RelayCommand((obj) =>
+					{
+						Course newCourse = new Course();
+						AddCourseWindow editCourseWindow = new AddCourseWindow(newCourse);
+
+						if (editCourseWindow.ShowDialog() is true)
+						{
+							CourseService.Courses.Add(newCourse);
+							CourseSaveChanges(newCourse);
+						}
+					}));
+			}
+		}
 		public RelayCommand EditCourseCommand
 		{
 			get
@@ -64,7 +82,27 @@ namespace UniversityWPF.ViewModel
 								CourseSaveChanges(c);
 							}
 						}
-
+					}));
+			}
+		}
+		public RelayCommand RemoveCourseCommand
+		{
+			get
+			{
+				return _removeCourseCommand ??
+					(_removeCourseCommand = new RelayCommand((course) =>
+					{
+						if (course is Course c)
+						{
+							try
+							{
+								CourseService.Courses.Remove(c);
+							}
+							catch (InvalidOperationException ex)
+							{
+								MessageBox.Show(ex.Message);
+							}		
+						}
 					}));
 			}
 		}
@@ -143,7 +181,9 @@ namespace UniversityWPF.ViewModel
 
 		private ObservableCollection<Group> _groupsWithCourseId;
 		private ObservableCollection<Student> _studentsWithGroupId;
+		private RelayCommand _addCourseCommand;
 		private RelayCommand _editCourseCommand;
+		private RelayCommand _removeCourseCommand;
 		private RelayCommand _groupSaveChangesCommand;
 		private RelayCommand _setGroupsByCourseIdCommand;
 		private RelayCommand _studentSaveChangesCommand;

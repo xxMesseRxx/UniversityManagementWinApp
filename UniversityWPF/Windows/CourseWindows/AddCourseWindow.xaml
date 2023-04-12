@@ -1,11 +1,11 @@
-﻿<Window x:Class="UniversityWPF.Windows.CourseWindows.EditCourseWindow"
+﻿<Window x:Class="UniversityWPF.Windows.CourseWindows.AddCourseWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:UniversityWPF"
+        xmlns:local="clr-namespace:UniversityWPF.Windows.CourseWindows"
         mc:Ignorable="d"
-        Title="EditCourse" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen">
+        Title="AddCourse" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -14,11 +14,6 @@
         </ResourceDictionary>
     </Window.Resources>
     <StackPanel Orientation="Vertical" Margin="5">
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Text="Course Id: "/>
-            <TextBox Text="{Binding CourseId}"
-                     Style="{StaticResource IdBoxStyle}"/>
-        </StackPanel>
         <StackPanel Orientation="Horizontal">
             <TextBlock Text="Course name: "/>
             <TextBox Text="{Binding Name}"/>
