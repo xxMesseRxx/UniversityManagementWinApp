@@ -14,6 +14,7 @@ using UniversityWPF.ViewModel.Services;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using UniversityWPF.Windows.CourseWindows;
+using UniversityWPF.Windows.GroupWindows;
 
 namespace UniversityWPF.ViewModel
 {
@@ -56,9 +57,9 @@ namespace UniversityWPF.ViewModel
 					(_addCourseCommand = new RelayCommand((obj) =>
 					{
 						Course newCourse = new Course();
-						AddCourseWindow editCourseWindow = new AddCourseWindow(newCourse);
+						AddCourseWindow addCourseWindow = new AddCourseWindow(newCourse);
 
-						if (editCourseWindow.ShowDialog() is true)
+						if (addCourseWindow.ShowDialog() is true)
 						{
 							CourseService.Courses.Add(newCourse);
 							CourseSaveChanges(newCourse);
@@ -106,24 +107,60 @@ namespace UniversityWPF.ViewModel
 					}));
 			}
 		}
-		public RelayCommand GroupSaveChangesCommand
+		public RelayCommand AddGroupCommand
 		{
 			get
 			{
-				return _groupSaveChangesCommand ??
-					(_groupSaveChangesCommand = new RelayCommand((obj) =>
+				return _addGroupCommand ??
+					(_addGroupCommand = new RelayCommand((obj) =>
 					{
-						try
+						Group newGroup = new Group();
+						AddGroupWindow addGroupWindow = new AddGroupWindow(newGroup, CourseService.Courses);
+
+						if (addGroupWindow.ShowDialog() is true)
 						{
-							GroupService.SaveChangesInDb(obj);
+							GroupService.Groups.Add(newGroup);
+							GroupSaveChanges(newGroup);
 						}
-						catch (ArgumentNullException ex)
+					}));
+			}
+		}
+		public RelayCommand EditGroupCommand
+		{
+			get
+			{
+				return _editGroupCommand ??
+					(_editGroupCommand = new RelayCommand((group) =>
+					{
+						if (group is Group g)
 						{
-							MessageBox.Show(ex.Message);
+							EditGroupWindow editGroupWindow = new EditGroupWindow(g, CourseService.Courses);
+
+							if (editGroupWindow.ShowDialog() is true)
+							{
+								GroupSaveChanges(g);
+							}
 						}
-						catch (ArgumentException ex)
+					}));
+			}
+		}
+		public RelayCommand RemoveGroupCommand
+		{
+			get
+			{
+				return _removeGroupCommand ??
+					(_removeGroupCommand = new RelayCommand((group) =>
+					{
+						if (group is Group g)
 						{
-							MessageBox.Show(ex.Message);
+							try
+							{
+								GroupService.Groups.Remove(g);
+							}
+							catch (InvalidOperationException ex)
+							{
+								MessageBox.Show(ex.Message);
+							}
 						}
 					}));
 			}
@@ -184,7 +221,9 @@ namespace UniversityWPF.ViewModel
 		private RelayCommand _addCourseCommand;
 		private RelayCommand _editCourseCommand;
 		private RelayCommand _removeCourseCommand;
-		private RelayCommand _groupSaveChangesCommand;
+		private RelayCommand _addGroupCommand;
+		private RelayCommand _editGroupCommand;
+		private RelayCommand _removeGroupCommand;
 		private RelayCommand _setGroupsByCourseIdCommand;
 		private RelayCommand _studentSaveChangesCommand;
 		private RelayCommand _setStudentsByGroupIdCommand;
@@ -209,6 +248,21 @@ namespace UniversityWPF.ViewModel
 			try
 			{
 				CourseService.SaveChangesInDb(course);
+			}
+			catch (ArgumentNullException ex)
+			{
+				MessageBox.Show(ex.Message);
+			}
+			catch (ArgumentException ex)
+			{
+				MessageBox.Show(ex.Message);
+			}
+		}
+		private void GroupSaveChanges(Group group)
+		{
+			try
+			{
+				GroupService.SaveChangesInDb(group);
 			}
 			catch (ArgumentNullException ex)
 			{

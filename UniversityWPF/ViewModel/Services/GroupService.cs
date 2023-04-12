@@ -128,6 +128,7 @@ namespace UniversityWPF.ViewModel.Services
 			catch (DbUpdateException)
 			{
 				SetActualDbContext();
+				throw new InvalidOperationException("You can't remove group, which contains at least 1 student");
 			}
 		}
 		private void ReloadEntity(Group group)

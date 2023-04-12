@@ -132,16 +132,7 @@
                         <RowDefinition/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <DataGrid x:Name="GroupsTable" Grid.Row="0" ItemsSource="{Binding GroupService.Groups}"
-                              IsReadOnly="{Binding ElementName=GroupsCanEdit, Path=IsChecked,
-                                                   Converter={StaticResource boolOppositeConverter}}">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="RowEditEnding">
-                                <i:InvokeCommandAction Command="{Binding GroupSaveChangesCommand}"
-                                                       CommandParameter="{Binding ElementName=GroupsTable,
-                                                                                  Path=SelectedItem}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
+                    <DataGrid x:Name="GroupsTable" Grid.Row="0" ItemsSource="{Binding GroupService.Groups}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Id" Binding="{Binding GroupId}" IsReadOnly="True"/>
                             <DataGridTextColumn Header="Group name"
@@ -156,18 +147,15 @@
                                                                                        RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
                                     </Style>
                                 </DataGridComboBoxColumn.ElementStyle>
-                                <DataGridComboBoxColumn.EditingElementStyle>
-                                    <Style TargetType="{x:Type ComboBox}">
-                                        <Setter Property="ItemsSource" Value="{Binding Path=DataContext.CourseService.Courses, 
-                                                                                       RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
-                                    </Style>
-                                </DataGridComboBoxColumn.EditingElementStyle>
                             </DataGridComboBoxColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                     <WrapPanel Grid.Row="1" HorizontalAlignment="Right">
-                        <CheckBox DockPanel.Dock="Left" Content="Editing mod"
-                                  x:Name="GroupsCanEdit"/>
+                        <Button Content="Add" Command="{Binding AddGroupCommand}"/>
+                        <Button Content="Edit" Command="{Binding EditGroupCommand}"
+                                CommandParameter="{Binding ElementName=GroupsTable, Path=SelectedItem}"/>
+                        <Button Content="Remove" Command="{Binding RemoveGroupCommand}"
+                                CommandParameter="{Binding ElementName=GroupsTable, Path=SelectedItem}"/>
                     </WrapPanel>
                 </Grid>
             </TabItem>
