@@ -16,6 +16,10 @@ using System.Runtime.CompilerServices;
 using UniversityWPF.Windows.CourseWindows;
 using UniversityWPF.Windows.GroupWindows;
 using UniversityWPF.Windows.StudentWindows;
+using Microsoft.Win32;
+using System.IO;
+using CsvHelper;
+using System.Globalization;
 
 namespace UniversityWPF.ViewModel
 {
@@ -77,10 +81,13 @@ namespace UniversityWPF.ViewModel
 					{
 						if (course is Course c)
 						{
-							EditCourseWindow editCourseWindow = new EditCourseWindow(c);
+							Course temporaryCourse = new Course { CourseId = c.CourseId, Name = c.Name, Description = c.Description };
+							EditCourseWindow editCourseWindow = new EditCourseWindow(temporaryCourse);
 
 							if (editCourseWindow.ShowDialog() is true)
 							{
+								c.Name = temporaryCourse.Name;
+								c.Description = temporaryCourse.Description;
 								CourseSaveChanges(c);
 							}
 						}
@@ -135,10 +142,13 @@ namespace UniversityWPF.ViewModel
 					{
 						if (group is Group g)
 						{
-							EditGroupWindow editGroupWindow = new EditGroupWindow(g, CourseService.Courses);
+							Group temporaryGroup = new Group { GroupId = g.GroupId, Name = g.Name, CourseId = g.CourseId };
+							EditGroupWindow editGroupWindow = new EditGroupWindow(temporaryGroup, CourseService.Courses);
 
 							if (editGroupWindow.ShowDialog() is true)
 							{
+								g.Name = temporaryGroup.Name;
+								g.CourseId = temporaryGroup.CourseId;
 								GroupSaveChanges(g);
 							}
 						}
@@ -207,10 +217,15 @@ namespace UniversityWPF.ViewModel
 					{
 						if (student is Student s)
 						{
-							EditStudentWindow editStudentWindow = new EditStudentWindow(s, GroupService.Groups);
+							Student temporaryStudent = new Student { StudentId = s.StudentId, FirstName = s.FirstName,
+																	LastName = s.LastName, GroupId = s.GroupId};
+							EditStudentWindow editStudentWindow = new EditStudentWindow(temporaryStudent, GroupService.Groups);
 
 							if (editStudentWindow.ShowDialog() is true)
 							{
+								s.FirstName = temporaryStudent.FirstName;
+								s.LastName = temporaryStudent.LastName;
+								s.GroupId = temporaryStudent.GroupId;
 								StudentSaveChanges(s);
 							}
 						}
@@ -245,6 +260,44 @@ namespace UniversityWPF.ViewModel
 					}));
 			}
 		}
+		public RelayCommand ExportGroupCommand
+		{
+			get
+			{
+				return _exportGroupCommand ??
+					(_exportGroupCommand = new RelayCommand((group) =>
+					{
+						if (group is Group g)
+						{
+							string path = GetPathToSave("*.csv", g.Name);
+
+							if (!string.IsNullOrEmpty(path))
+							{
+								WriteGroupToCsvFile(path, g);
+							}
+						}
+					}));
+			}
+		}
+		public RelayCommand ImportGroupCommand
+		{
+			get
+			{
+				return _importGroupCommand ??
+					(_importGroupCommand = new RelayCommand((group) =>
+					{
+						if (group is Group g)
+						{
+							string path = GetPathToOpen("*.csv", g.Name);
+
+							if (!string.IsNullOrEmpty(path))
+							{
+								ReadGroupFromCsvFile(path, g);
+							}
+						}
+					}));
+			}
+		}
 
 		private ObservableCollection<Group> _groupsWithCourseId;
 		private ObservableCollection<Student> _studentsWithGroupId;
@@ -259,6 +312,8 @@ namespace UniversityWPF.ViewModel
 		private RelayCommand _editStudentCommand;
 		private RelayCommand _removeStudentCommand;
 		private RelayCommand _setStudentsByGroupIdCommand;
+		private RelayCommand _exportGroupCommand;
+		private RelayCommand _importGroupCommand;
 
 		public ApplicationViewModel(ICourseService courseService,
                                     IGroupService groupService,
@@ -318,6 +373,67 @@ namespace UniversityWPF.ViewModel
 			catch (ArgumentException ex)
 			{
 				MessageBox.Show(ex.Message);
+			}
+		}
+		private string GetPathToSave(string fileType, string defFileName = "")
+		{
+			SaveFileDialog saveFileDialog = new SaveFileDialog();
+			saveFileDialog.Filter = $"({fileType})|{fileType}";
+			saveFileDialog.FileName = defFileName;
+
+			if (saveFileDialog.ShowDialog() is true)
+			{
+				return saveFileDialog.FileName;
+			}
+
+			return "";
+		}
+		private string GetPathToOpen(string fileType, string defFileName = "")
+		{
+			OpenFileDialog openFileDialog = new OpenFileDialog();
+			openFileDialog.Filter = $"({fileType})|{fileType}";
+			openFileDialog.FileName = defFileName;
+
+			if (openFileDialog.ShowDialog() is true)
+			{
+				return openFileDialog.FileName;
+			}
+
+			return "";
+		}
+		private void WriteGroupToCsvFile(string path, Group group)
+		{
+			using (StreamWriter streamWriter = new StreamWriter(path))
+			{
+				using (CsvWriter csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
+				{
+					csvWriter.Context.RegisterClassMap<StudentClassMap>();
+					csvWriter.WriteRecords(StudentService.Students.Where(s => s.GroupId == group.GroupId));
+				}
+			}
+		}
+		private void ReadGroupFromCsvFile(string path, Group group)
+		{
+			using (StreamReader streamReader = new StreamReader(path))
+			{
+				using (CsvReader csvReader = new CsvReader(streamReader, CultureInfo.InvariantCulture))
+				{
+					csvReader.Context.RegisterClassMap<StudentClassMap>();
+					foreach (var item in StudentService.Students.ToList())
+					{
+						if (item.GroupId == group.GroupId)
+						{
+							StudentService.Students.Remove(item);
+						}
+					}
+					var students = csvReader.GetRecords<Student>();
+					foreach (var student in students)
+					{
+						student.GroupId = group.GroupId;
+						StudentService.Students.Add(student);
+						StudentService.SaveChangesInDb(student);
+					}
+				}
 			}
 		}
 	}

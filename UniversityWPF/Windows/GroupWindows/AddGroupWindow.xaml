@@ -22,7 +22,7 @@
             <TextBlock Text="Course name: "/>
             <ComboBox x:Name="CoursesBox" SelectedValuePath="CourseId"
                       DisplayMemberPath="Name"
-                      SelectedValue="{Binding CourseId}"/>
+                      SelectedValue="{Binding CourseId, UpdateSourceTrigger=Explicit}"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
             <Button Content="Save" IsDefault="True" Click="BtnSave_Click"/>
