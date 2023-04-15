@@ -16,7 +16,6 @@
         </ResourceDictionary>
     </Window.Resources>
     <DockPanel LastChildFill="True">
-
         <!--Start: Footer-->
         <StatusBar DockPanel.Dock="Bottom">
             <TextBlock Text="{Binding StringFormat=Current page - {0},
@@ -157,6 +156,9 @@
                         <Button Content="Import group"
                                 Command="{Binding ImportGroupCommand}"
                                 CommandParameter="{Binding ElementName=GroupsTable, Path=SelectedItem}"/>
+                        <Button Content="Print group"
+                                Command="{Binding OpenPrintWindowCommand}"
+                                CommandParameter="{Binding ElementName=GroupsTable, Path=SelectedItem.GroupId}"/>
                     </WrapPanel>
                     <WrapPanel Grid.Row="1" HorizontalAlignment="Right">
                         <Button Content="Add" Command="{Binding AddGroupCommand}"/>

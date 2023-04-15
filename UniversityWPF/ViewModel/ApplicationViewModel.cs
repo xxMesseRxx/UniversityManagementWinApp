@@ -20,6 +20,7 @@ using Microsoft.Win32;
 using System.IO;
 using CsvHelper;
 using System.Globalization;
+using UniversityWPF.Windows;
 
 namespace UniversityWPF.ViewModel
 {
@@ -48,6 +49,18 @@ namespace UniversityWPF.ViewModel
 			set
 			{
 				_studentsWithGroupId = value;
+				OnPropertyChanged();
+			}
+		}
+		public ObservableCollection<Student> StudentsForPrint
+		{
+			get
+			{
+				return _studentsForPrint;
+			}
+			set
+			{
+				_studentsForPrint = value;
 				OnPropertyChanged();
 			}
 		}
@@ -298,7 +311,24 @@ namespace UniversityWPF.ViewModel
 					}));
 			}
 		}
+		public RelayCommand OpenPrintWindowCommand
+		{
+			get
+			{
+				return _openPrintWindowCommand ??
+					(_openPrintWindowCommand = new RelayCommand((groupId) =>
+					{
+						if (groupId is int id)
+						{
+							PrintWindow printWindow = new PrintWindow(StudentService.GetStudentsByGroupId(id));
+							printWindow.ShowDialog();
+							
+						}
+					}));
+			}
+		}
 
+		private ObservableCollection<Student> _studentsForPrint;
 		private ObservableCollection<Group> _groupsWithCourseId;
 		private ObservableCollection<Student> _studentsWithGroupId;
 		private RelayCommand _addCourseCommand;
@@ -314,6 +344,7 @@ namespace UniversityWPF.ViewModel
 		private RelayCommand _setStudentsByGroupIdCommand;
 		private RelayCommand _exportGroupCommand;
 		private RelayCommand _importGroupCommand;
+		private RelayCommand _openPrintWindowCommand;
 
 		public ApplicationViewModel(ICourseService courseService,
                                     IGroupService groupService,
@@ -408,7 +439,7 @@ namespace UniversityWPF.ViewModel
 				using (CsvWriter csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
 				{
 					csvWriter.Context.RegisterClassMap<StudentClassMap>();
-					csvWriter.WriteRecords(StudentService.Students.Where(s => s.GroupId == group.GroupId));
+					csvWriter.WriteRecords(StudentService.GetStudentsByGroupId(group.GroupId));
 				}
 			}
 		}
@@ -419,14 +450,13 @@ namespace UniversityWPF.ViewModel
 				using (CsvReader csvReader = new CsvReader(streamReader, CultureInfo.InvariantCulture))
 				{
 					csvReader.Context.RegisterClassMap<StudentClassMap>();
-					foreach (var item in StudentService.Students.ToList())
-					{
-						if (item.GroupId == group.GroupId)
-						{
-							StudentService.Students.Remove(item);
-						}
-					}
 					var students = csvReader.GetRecords<Student>();
+
+					foreach (var item in StudentService.GetStudentsByGroupId(group.GroupId))
+					{
+						StudentService.Students.Remove(item);
+					}
+
 					foreach (var student in students)
 					{
 						student.GroupId = group.GroupId;
