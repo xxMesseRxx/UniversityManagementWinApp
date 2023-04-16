@@ -210,7 +210,8 @@ namespace UniversityWPF.Tests.ViewModelTests
 			}
 		}
 		[TestMethod]
-		public void SaveChangesInDb_RemoveCourseWithGroups_CourseWasNotRemovedExpected()
+		[ExpectedException(typeof(InvalidOperationException))]
+		public void SaveChangesInDb_RemoveCourseWithGroups_InvalidOperationExceptionExpected()
 		{
 			var dbCreator = new TestDBCreator();
 			try
@@ -220,16 +221,9 @@ namespace UniversityWPF.Tests.ViewModelTests
 				CourseService courseService = TestServicesCreator.GetCourseService();
 				ObservableCollection<Course> courses = courseService.Courses;
 				Course removedCourse = courses[5];
-				int expected = 9;
 
 				//Act
 				courses.Remove(removedCourse);
-
-				courses = courseService.Courses;
-				int actual = courses.Count();
-
-				//Assert
-				Assert.AreEqual(expected, actual);
 			}
 			finally
 			{

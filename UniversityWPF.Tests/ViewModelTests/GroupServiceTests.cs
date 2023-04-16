@@ -261,7 +261,8 @@ namespace UniversityWPF.Tests.ViewModelTests
 			}
 		}
 		[TestMethod]
-		public void SaveChangesInDb_RemoveGroupWithStudents_GroupWasNotRemovedExpected()
+		[ExpectedException(typeof(InvalidOperationException))]
+		public void SaveChangesInDb_RemoveGroupWithStudents_InvalidOperationExceptionExpected()
 		{
 			var dbCreator = new TestDBCreator();
 			try
@@ -271,16 +272,58 @@ namespace UniversityWPF.Tests.ViewModelTests
 				GroupService groupService = TestServicesCreator.GetGroupService();
 				ObservableCollection<Group> groups = groupService.Groups;
 				Group removedGroup = groups[1];
-				int expected = 30;
 
 				//Act
 				groups.Remove(removedGroup);
+			}
+			finally
+			{
+				dbCreator.Dispose();
+			}
+		}
 
-				groups = groupService.Groups;
-				int actual = groups.Count();
+		[TestMethod]
+		public void GetGroupsByCourseId_CorCourseId_GroupsWithCourseIdExpected()
+		{
+			var dbCreator = new TestDBCreator();
+			try
+			{
+				//Arrange
+				dbCreator.CreateTestDB();
+				GroupService groupService = TestServicesCreator.GetGroupService();
+				int expectedCourseId = 5;
+
+				//Act
+				ObservableCollection<Group> groups = groupService.GetGroupsByCourseId(expectedCourseId);
 
 				//Assert
-				Assert.AreEqual(expected, actual);
+				foreach (var item in groups)
+				{
+					int actualCourseId = item.CourseId;
+					Assert.AreEqual(expectedCourseId, actualCourseId);
+				}
+			}
+			finally
+			{
+				dbCreator.Dispose();
+			}
+		}
+		[TestMethod]
+		public void GetGroupsByCourseId_UnexistCourseId_0GroupsExpected()
+		{
+			var dbCreator = new TestDBCreator();
+			try
+			{
+				//Arrange
+				dbCreator.CreateTestDB();
+				GroupService groupService = TestServicesCreator.GetGroupService();
+				int unexistCourseId = -5;
+
+				//Act
+				ObservableCollection<Group> groups = groupService.GetGroupsByCourseId(unexistCourseId);
+
+				//Assert
+				Assert.AreEqual(0, groups.Count());
 			}
 			finally
 			{

@@ -277,5 +277,54 @@ namespace UniversityWPF.Tests.ViewModelTests
 				dbCreator.Dispose();
 			}
 		}
+
+		[TestMethod]
+		public void GetStudentsByGroupId_CorGroupId_StudentsWithGroupIdExpected()
+		{
+			var dbCreator = new TestDBCreator();
+			try
+			{
+				//Arrange
+				dbCreator.CreateTestDB();
+				StudentService studentService = TestServicesCreator.GetStudentService();
+				int expectedGroupId = 6;
+
+				//Act
+				ObservableCollection<Student> students = studentService.GetStudentsByGroupId(expectedGroupId); ;
+
+				//Assert
+				foreach (var item in students)
+				{
+					int actualGroupId = item.GroupId;
+					Assert.AreEqual(expectedGroupId, actualGroupId);
+				}
+			}
+			finally
+			{
+				dbCreator.Dispose();
+			}
+		}
+		[TestMethod]
+		public void GetStudentsByGroupId_UnexistGroupId_0StudentsExpected()
+		{
+			var dbCreator = new TestDBCreator();
+			try
+			{
+				//Arrange
+				dbCreator.CreateTestDB();
+				StudentService studentService = TestServicesCreator.GetStudentService();
+				int unexistGroupId = -6;
+
+				//Act
+				ObservableCollection<Student> students = studentService.GetStudentsByGroupId(unexistGroupId); ;
+
+				//Assert
+				Assert.AreEqual(0, students.Count());
+			}
+			finally
+			{
+				dbCreator.Dispose();
+			}
+		}
 	}
 }
