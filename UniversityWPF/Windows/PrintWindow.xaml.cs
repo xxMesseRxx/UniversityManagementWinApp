@@ -21,10 +21,12 @@ namespace UniversityWPF.Windows
 	/// </summary>
 	public partial class PrintWindow : Window
 	{
-		public PrintWindow(IEnumerable<Student> students)
+		public PrintWindow(IEnumerable<Student> students, string courseName, string groupName)
 		{
 			InitializeComponent();
 			SetPages(students.ToList());
+			CourseName.Text = $"Course name: {courseName}";
+			GroupName.Text = $"Group name: {groupName}";
 		}
 
 		private List<List<Student>> SplitStudentsList(List<Student> students, int maxStudentsInList)
@@ -46,7 +48,7 @@ namespace UniversityWPF.Windows
 				return;
 			}
 
-			List<List<Student>> splitedStudentsForPages = SplitStudentsList(students, 45);
+			List<List<Student>> splitedStudentsForPages = SplitStudentsList(students, 48);
 			DataContext = splitedStudentsForPages[0];
 
 			if (splitedStudentsForPages.Count > 1)
@@ -66,7 +68,7 @@ namespace UniversityWPF.Windows
 			PageContent pc = new PageContent();
 			FixedPage fp = new FixedPage();
 			var studentDataGrid = CreateNewDataGrid(students);
-			FixedPage.SetRight(studentDataGrid, 340);
+			FixedPage.SetRight(studentDataGrid, 210);
 			FixedPage.SetTop(studentDataGrid, 20);
 			fp.Children.Add(studentDataGrid);
 			((IAddChild)pc).AddChild(fp);
@@ -76,17 +78,20 @@ namespace UniversityWPF.Windows
 		{
 			DataGrid dataGrid = new DataGrid();
 			dataGrid.ItemsSource = students;
-			dataGrid.AutoGenerateColumns = false;
+			dataGrid.Style = Resources["DataGridStyle"] as Style;
+			dataGrid.CellStyle = Resources["DataGridCellStyle"] as Style;
 
 			dataGrid.Columns.Add(new DataGridTextColumn()
 			{
 				Header = "First name",
-				Binding = new Binding("FirstName")
+				Binding = new Binding("FirstName"),
+				HeaderStyle = Resources["DataGridColumnHeaderStyle"] as Style
 			});
 			dataGrid.Columns.Add(new DataGridTextColumn()
 			{
 				Header = "Last name",
-				Binding = new Binding("LastName")
+				Binding = new Binding("LastName"),
+				HeaderStyle = Resources["DataGridColumnHeaderStyle"] as Style
 			});
 
 			return dataGrid;

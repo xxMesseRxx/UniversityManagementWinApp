@@ -158,7 +158,7 @@
                                 CommandParameter="{Binding ElementName=GroupsTable, Path=SelectedItem}"/>
                         <Button Content="Print group"
                                 Command="{Binding OpenPrintWindowCommand}"
-                                CommandParameter="{Binding ElementName=GroupsTable, Path=SelectedItem.GroupId}"/>
+                                CommandParameter="{Binding ElementName=GroupsTable, Path=SelectedItem}"/>
                     </WrapPanel>
                     <WrapPanel Grid.Row="1" HorizontalAlignment="Right">
                         <Button Content="Add" Command="{Binding AddGroupCommand}"/>

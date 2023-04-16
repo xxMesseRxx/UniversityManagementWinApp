@@ -316,13 +316,14 @@ namespace UniversityWPF.ViewModel
 			get
 			{
 				return _openPrintWindowCommand ??
-					(_openPrintWindowCommand = new RelayCommand((groupId) =>
+					(_openPrintWindowCommand = new RelayCommand((group) =>
 					{
-						if (groupId is int id)
+						if (group is Group g)
 						{
-							PrintWindow printWindow = new PrintWindow(StudentService.GetStudentsByGroupId(id));
-							printWindow.ShowDialog();
-							
+							PrintWindow printWindow = new PrintWindow(StudentService.GetStudentsByGroupId(g.GroupId), 
+																	  CourseService.Courses.First(c => c.CourseId == g.CourseId).Name,
+																	  g.Name);
+							printWindow.ShowDialog();							
 						}
 					}));
 			}

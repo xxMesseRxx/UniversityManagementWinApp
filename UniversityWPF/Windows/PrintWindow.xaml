@@ -6,79 +6,37 @@
         xmlns:local="clr-namespace:UniversityWPF.Windows"
         mc:Ignorable="d"
         Title="Print" Height="450" Width="800">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/PrintWindowStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <FixedDocument x:Name="FxDoc">
         <PageContent>
             <FixedPage>
-                <Grid FixedPage.Right="340">
+                <Grid FixedPage.Right="210" FixedPage.Top="20">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Text="Course name" Grid.Row="0" HorizontalAlignment="Center"/>
-                    <TextBlock Text="Course name" Grid.Row="1"/>
+                    <TextBlock x:Name="CourseName" Grid.Row="0" Style="{StaticResource TextBlockStyle}"/>
+                    <TextBlock x:Name="GroupName" Grid.Row="1" Style="{StaticResource TextBlockStyle}"/>
                     <DataGrid Grid.Row="2"
                               ItemsSource="{Binding}"
-                              AutoGenerateColumns="False"
-                              VerticalScrollBarVisibility="Disabled">
+                              Style="{StaticResource DataGridStyle}"
+                              CellStyle="{StaticResource DataGridCellStyle}">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="First name" Binding="{Binding FirstName}"/>
-                            <DataGridTextColumn Header="Last name" Binding="{Binding LastName}"/>
+                            <DataGridTextColumn Header="First name" Binding="{Binding FirstName}"
+                                                HeaderStyle="{StaticResource DataGridColumnHeaderStyle}"/>
+                            <DataGridTextColumn Header="Last name" Binding="{Binding LastName}"
+                                                HeaderStyle="{StaticResource DataGridColumnHeaderStyle}"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <!--<ListView Grid.Row="2" Height="Auto"
-                                  ItemsSource="{Binding}">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Width="100" Header="First name" DisplayMemberBinding="{Binding FirstName}"/>
-                                <GridViewColumn Width="100" Header="Last name" DisplayMemberBinding="{Binding LastName}"/>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>-->
                 </Grid>
             </FixedPage>
         </PageContent>
     </FixedDocument>
-    <!--<Grid x:Name="Print">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Button Content="Print" Click="Button_Click"/>
-        <ScrollViewer Grid.Row="1">
-            <FlowDocumentReader>
-                <FlowDocument>
-                    <BlockUIContainer LineHeight="Auto">
-                        <Grid HorizontalAlignment="Center">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <TextBlock Text="Course name" Grid.Row="0"/>
-                            <TextBlock Text="Course name" Grid.Row="1"/>
-                            <ListView Grid.Row="2" Height="Auto"
-                                  ItemsSource="{Binding}">
-                                <ListView.View>
-                                    <GridView>
-                                        <GridViewColumn Header="First name" DisplayMemberBinding="{Binding FirstName}"/>
-                                        <GridViewColumn Header="Last name" DisplayMemberBinding="{Binding LastName}"/>
-                                    </GridView>
-                                </ListView.View>
-                            </ListView>
-                            --><!--<DataGrid Grid.Row="2"
-                              ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=DataContext}"
-                              AutoGenerateColumns="False"
-                              VerticalScrollBarVisibility="Disabled">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="First name" Binding="{Binding FirstName}"/>
-                                <DataGridTextColumn Header="Last name" Binding="{Binding LastName}"/>
-                            </DataGrid.Columns>
-                        </DataGrid>--><!--
-                        </Grid>
-                    </BlockUIContainer>
-                </FlowDocument>
-            </FlowDocumentReader>
-        </ScrollViewer>
-    </Grid>-->
 </Window>
