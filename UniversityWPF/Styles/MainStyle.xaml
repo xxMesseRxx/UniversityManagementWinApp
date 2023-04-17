@@ -1,0 +1,160 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:conv="clr-namespace:UniversityWPF.Library.Converters">
+
+    <!--Colors-->
+    <SolidColorBrush x:Key="SecondaryAzureColor" Color="#FFEBFFFD"/>
+    <SolidColorBrush x:Key="TertiaryAzureColor" Color="#FF46C3AF"/>
+
+    <SolidColorBrush x:Key="PrimaryTextColor" Color="Black"/>
+    <SolidColorBrush x:Key="SecondaryTextColor" Color="#FF0B6D5D"/>
+
+    <!--Start: Main Button style-->
+    <Style TargetType="Button">
+        <Setter Property="Margin" Value="0 0 10 5"/>
+        <Setter Property="MinHeight" Value="30"/>
+        <Setter Property="MinWidth" Value="70"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+    <!--End: Main Button style-->
+
+    <!--Start: Main TextBlock style-->
+    <Style TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="FontFamily" Value="Arial"/>
+        <Setter Property="Foreground" Value="{StaticResource PrimaryTextColor}"/>
+    </Style>
+    <!--End: Main TextBlock style-->
+    
+    <!--Start: TabControl style-->
+    <Style TargetType="TabControl">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabControl">
+                    <Grid KeyboardNavigation.TabNavigation="Local">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TabPanel x:Name="HeaderPanel"                               
+                                  Grid.Column="0"
+                                  Panel.ZIndex="1"
+                                  Margin="0"
+                                  IsItemsHost="True"
+                                  KeyboardNavigation.TabIndex="1"
+                                  Background="Transparent" />
+                        <Border x:Name="Border"
+                                Grid.Column="1"
+                                BorderThickness="0"
+                                CornerRadius="0 30 30 0"
+                                KeyboardNavigation.TabNavigation="Local"
+                                KeyboardNavigation.DirectionalNavigation="Contained"
+                                KeyboardNavigation.TabIndex="2"
+                                Background="{StaticResource SecondaryAzureColor}">
+                            <ContentPresenter x:Name="PART_SelectedContentHost"
+                                              ContentSource="SelectedContent"/>
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--End: TabControl style-->
+    
+    <!--Start: TabItem style-->
+    <Style TargetType="TabItem">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabItem">
+                    <Grid x:Name="Root">
+                        <Border x:Name="ElBorder"
+                                CornerRadius="20 0 0 20"
+                                Margin="0 0 0 3">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="3"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock x:Name="TextContent"
+                                           Grid.Row="0"
+                                           Padding="34 12"                                           
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           FontFamily="Arial"
+                                           FontSize="16"
+                                           FontWeight="Bold"
+                                           Foreground="{DynamicResource SecondaryTextColor}"
+                                           Text="{TemplateBinding Header}"/>
+                                <Border x:Name="Underline"
+                                        Grid.Row="1"
+                                        Width="124"
+                                        Height="3"
+                                        CornerRadius="1.5"
+                                        Background="Transparent"
+                                        BorderBrush="Transparent"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Bottom"
+                                        Margin="13 0 0 0"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ElBorder" Property="Background" Value="{StaticResource SecondaryAzureColor}"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="ElBorder" Property="Background" Value="{StaticResource SecondaryAzureColor}"/>
+                            <Setter TargetName="Underline" Property="Background" Value="{StaticResource TertiaryAzureColor}"/>
+                            <Setter TargetName="TextContent" Property="Foreground" Value="{DynamicResource PrimaryTextColor}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--End: TabItem style-->
+
+    <!--Start: Main DataGrid style-->
+    <Style TargetType="DataGrid">
+        <Setter Property="AutoGenerateColumns" Value="False"/>
+        <Setter Property="IsReadOnly" Value="True"/>
+        <Setter Property="VerticalGridLinesBrush" Value="Transparent"/>
+        <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource PrimaryAzureColor}"/>
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontFamily" Value="TimesNewRoman"/>
+        <Setter Property="Foreground" Value="{StaticResource PrimaryTextColor}"/>
+    </Style>
+    <!--End: Main DataGrid style-->
+
+    <!--Start: Wrap text for TextBlock style-->
+    <Style x:Key="WrapTextBlockStyle" TargetType="TextBlock">
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+    <!--End: Wrap text for TextBlock style-->
+
+    <!--Start: Wrap text for TextBox style-->
+    <Style x:Key="WrapTextBoxStyle" TargetType="TextBox">
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+    <!--End: Wrap text for TextBox style-->
+
+    <!--Start: Main DataGridCell style-->
+    <Style TargetType="DataGridCell">
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, 
+                                                              Path=Foreground}"/>
+                <Setter Property="Background" Value="{StaticResource SecondaryAzureColor}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource TertiaryAzureColor}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <!--End: Main DataGridRow style-->
+</ResourceDictionary>

@@ -1,0 +1,8 @@
+﻿<Application x:Class="UniversityWPF.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:UniversityWPF">
+    <Application.Resources>
+        <SolidColorBrush x:Key="PrimaryAzureColor" Color="#FFB1EADF"/>
+    </Application.Resources>
+</Application>
